@@ -31,14 +31,40 @@ model StudySession {
 }
 
 model LessonPlan {
-  id          Int      @id @default(autoincrement())
+  id          Int                   @id @default(autoincrement())
   title       String
   subjectId   Int
-  Subject     Subject  @relation(fields: [subjectId], references: [id])
+  Subject     Subject               @relation(fields: [subjectId], references: [id])
   content     String?
   plannedDate DateTime
-  isCompleted Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  isCompleted Boolean               @default(false)
+  checklist   LessonChecklistItem[]
+  createdAt   DateTime              @default(now())
+}
+
+model ChecklistTemplate {
+  id          Int                     @id @default(autoincrement())
+  name        String
+  description String?
+  items       ChecklistTemplateItem[]
+  createdAt   DateTime                @default(now())
+}
+
+model ChecklistTemplateItem {
+  id         Int               @id @default(autoincrement())
+  templateId Int
+  template   ChecklistTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  text       String
+  order      Int
+}
+
+model LessonChecklistItem {
+  id          Int        @id @default(autoincrement())
+  lessonId    Int
+  lesson      LessonPlan @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  text        String
+  isCompleted Boolean    @default(false)
+  order       Int
 }
 
 model ExamResult {

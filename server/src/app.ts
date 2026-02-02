@@ -100,12 +100,53 @@ app.delete('/api/sessions/:id', async (req, res) => {
     }
 });
 
+// --- Checklist Templates ---
+app.get('/api/templates', async (req, res) => {
+    try {
+        const templates = await prisma.checklistTemplate.findMany({
+            include: { items: { orderBy: { order: 'asc' } } }
+        });
+        res.json(templates);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch templates' });
+    }
+});
+
+app.post('/api/templates', async (req, res) => {
+    try {
+        const { name, description, items } = req.body;
+        const template = await prisma.checklistTemplate.create({
+            data: {
+                name,
+                description,
+                items: {
+                    create: items.map((text: string, index: number) => ({ text, order: index }))
+                }
+            },
+            include: { items: true }
+        });
+        res.json(template);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create template' });
+    }
+});
+
+app.delete('/api/templates/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.checklistTemplate.delete({ where: { id: Number(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete template' });
+    }
+});
+
 // --- Lesson Plans ---
 app.get('/api/lessons', async (req, res) => {
     try {
         const lessons = await prisma.lessonPlan.findMany({
             orderBy: { plannedDate: 'asc' },
-            include: { Subject: true }
+            include: { Subject: true, checklist: { orderBy: { order: 'asc' } } }
         });
         res.json(lessons);
     } catch (error) {
@@ -115,15 +156,34 @@ app.get('/api/lessons', async (req, res) => {
 
 app.post('/api/lessons', async (req, res) => {
     try {
-        const { title, subjectId, content, plannedDate } = req.body;
+        const { title, subjectId, content, plannedDate, templateId } = req.body;
+
+        let checklistData = {};
+        if (templateId) {
+            const template = await prisma.checklistTemplate.findUnique({
+                where: { id: Number(templateId) },
+                include: { items: true }
+            });
+            if (template) {
+                checklistData = {
+                    create: template.items.map(item => ({
+                        text: item.text,
+                        order: item.order,
+                        isCompleted: false
+                    }))
+                };
+            }
+        }
+
         const lesson = await prisma.lessonPlan.create({
             data: {
                 title,
                 subjectId: Number(subjectId),
                 content,
-                plannedDate: new Date(plannedDate)
+                plannedDate: new Date(plannedDate),
+                checklist: checklistData
             },
-            include: { Subject: true }
+            include: { Subject: true, checklist: true }
         });
         res.json(lesson);
     } catch (error) {
@@ -157,7 +217,7 @@ app.put('/api/lessons/:id', async (req, res) => {
                 content,
                 plannedDate: new Date(plannedDate)
             },
-            include: { Subject: true }
+            include: { Subject: true, checklist: true }
         });
         res.json(lesson);
     } catch (error) {
@@ -172,6 +232,34 @@ app.delete('/api/lessons/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete lesson' });
+    }
+});
+
+app.put('/api/lessons/checklist-items/:id/toggle', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const item = await prisma.lessonChecklistItem.findUnique({ where: { id: Number(id) } });
+        if (!item) return res.status(404).json({ error: 'Item not found' });
+
+        const updatedItem = await prisma.lessonChecklistItem.update({
+            where: { id: Number(id) },
+            data: { isCompleted: !item.isCompleted }
+        });
+
+        // Check if all items are completed
+        const allItems = await prisma.lessonChecklistItem.findMany({
+            where: { lessonId: item.lessonId }
+        });
+        const allDone = allItems.every((i: any) => i.isCompleted);
+
+        await prisma.lessonPlan.update({
+            where: { id: item.lessonId },
+            data: { isCompleted: allDone }
+        });
+
+        res.json(updatedItem);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to toggle checklist item' });
     }
 });
 

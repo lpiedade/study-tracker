@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { CheckCircle, Clock, Plus, Trash2, Edit2, X } from 'lucide-react';
 import api from '../lib/api';
-import type { LessonPlan, StudySession, Subject } from '../types';
+import type { LessonPlan, StudySession, Subject, ChecklistTemplate } from '../types';
 import clsx from 'clsx';
 
 export default function Planner() {
@@ -10,23 +10,26 @@ export default function Planner() {
     const [lessons, setLessons] = useState<LessonPlan[]>([]);
     const [sessions, setSessions] = useState<StudySession[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
+    const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Form states
-    const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
+    const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
     const [newSession, setNewSession] = useState({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
     const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
 
     const fetchData = async () => {
         try {
-            const [lessonsRes, sessionsRes, subjectsRes] = await Promise.all([
+            const [lessonsRes, sessionsRes, subjectsRes, templatesRes] = await Promise.all([
                 api.get('/lessons'),
                 api.get('/sessions'),
-                api.get('/subjects')
+                api.get('/subjects'),
+                api.get('/templates')
             ]);
             setLessons(lessonsRes.data);
             setSessions(sessionsRes.data);
             setSubjects(subjectsRes.data);
+            setTemplates(templatesRes.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -47,7 +50,7 @@ export default function Planner() {
             } else {
                 await api.post('/lessons', newLesson);
             }
-            setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
+            setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
             fetchData();
         } catch (err) {
             alert('Failed to save lesson');
@@ -58,10 +61,20 @@ export default function Planner() {
         if (!confirm("Delete this lesson?")) return;
         try {
             await api.delete(`/lessons/${id}`);
+            if (editingLessonId === id) {
+                cancelEditing();
+            }
             fetchData();
         } catch (err) {
             alert('Failed to delete lesson');
         }
+    };
+
+    const toggleChecklistItem = async (itemId: number) => {
+        try {
+            await api.put(`/lessons/checklist-items/${itemId}/toggle`);
+            fetchData();
+        } catch (err) { console.error(err); }
     };
 
     const startEditingLesson = (lesson: LessonPlan) => {
@@ -69,13 +82,14 @@ export default function Planner() {
         setNewLesson({
             title: lesson.title,
             subjectId: lesson.subjectId.toString(),
-            plannedDate: format(new Date(lesson.plannedDate), 'yyyy-MM-dd')
+            plannedDate: format(new Date(lesson.plannedDate), 'yyyy-MM-dd'),
+            templateId: '' // Templates are applied only on creation in this version
         });
     };
 
     const cancelEditing = () => {
         setEditingLessonId(null);
-        setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
+        setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
     };
 
     const handleCreateSession = async (e: React.FormEvent) => {
@@ -146,6 +160,38 @@ export default function Planner() {
                                                     <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: lesson.Subject?.color }}></span>
                                                     {lesson.Subject?.name || 'Unknown'} • {format(new Date(lesson.plannedDate), 'MMM d, yyyy')}
                                                 </p>
+
+                                                {lesson.checklist && lesson.checklist.length > 0 && (
+                                                    <div className="mt-4 space-y-2">
+                                                        <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+                                                            <span>Checklist ({lesson.checklist.filter(i => i.isCompleted).length}/{lesson.checklist.length})</span>
+                                                            <span>{Math.round((lesson.checklist.filter(i => i.isCompleted).length / lesson.checklist.length) * 100)}%</span>
+                                                        </div>
+                                                        <div className="w-full bg-gray-100 rounded-full h-1.5 mb-3">
+                                                            <div
+                                                                className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300"
+                                                                style={{ width: `${(lesson.checklist.filter(i => i.isCompleted).length / lesson.checklist.length) * 100}%` }}
+                                                            ></div>
+                                                        </div>
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+                                                            {lesson.checklist.map(item => (
+                                                                <button
+                                                                    key={item.id}
+                                                                    onClick={() => toggleChecklistItem(item.id)}
+                                                                    className="flex items-center gap-2 text-sm text-left group"
+                                                                >
+                                                                    <div className={clsx(
+                                                                        "w-4 h-4 rounded border flex items-center justify-center transition-colors",
+                                                                        item.isCompleted ? "bg-indigo-600 border-indigo-600" : "border-gray-300 group-hover:border-indigo-400"
+                                                                    )}>
+                                                                        {item.isCompleted && <CheckCircle className="w-3 h-3 text-white" />}
+                                                                    </div>
+                                                                    <span className={clsx(item.isCompleted && "line-through text-gray-400")}>{item.text}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -224,6 +270,16 @@ export default function Planner() {
                                 <input required type="date" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newLesson.plannedDate} onChange={e => setNewLesson({ ...newLesson, plannedDate: e.target.value })} />
                             </div>
+                            {!editingLessonId && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Checklist Template (Optional)</label>
+                                    <select className="w-full rounded-lg border-gray-300"
+                                        value={newLesson.templateId} onChange={e => setNewLesson({ ...newLesson, templateId: e.target.value })}>
+                                        <option value="">No Template</option>
+                                        {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                                    </select>
+                                </div>
+                            )}
                             <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2">
                                 <Plus className="w-4 h-4" /> {editingLessonId ? 'Update Lesson' : 'Add Lesson'}
                             </button>

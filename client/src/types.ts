@@ -17,6 +17,29 @@ export interface StudySession {
     notes?: string;
 }
 
+export interface ChecklistTemplateItem {
+    id: number;
+    templateId: number;
+    text: string;
+    order: number;
+}
+
+export interface ChecklistTemplate {
+    id: number;
+    name: string;
+    description?: string;
+    items: ChecklistTemplateItem[];
+    createdAt: string;
+}
+
+export interface LessonChecklistItem {
+    id: number;
+    lessonId: number;
+    text: string;
+    isCompleted: boolean;
+    order: number;
+}
+
 export interface LessonPlan {
     id: number;
     title: string;
@@ -25,6 +48,7 @@ export interface LessonPlan {
     content?: string;
     plannedDate: string;
     isCompleted: boolean;
+    checklist?: LessonChecklistItem[];
 }
 
 export interface ExamResult {
