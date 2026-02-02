@@ -13,7 +13,8 @@ app.use(express.json());
 app.get('/api/subjects', async (req, res) => {
     try {
         const subjects = await prisma.subject.findMany({
-            orderBy: { name: 'asc' }
+            orderBy: { name: 'asc' },
+            include: { lessonPlans: true }
         });
         res.json(subjects);
     } catch (error) {

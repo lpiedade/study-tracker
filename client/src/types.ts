@@ -3,6 +3,7 @@ export interface Subject {
     name: string;
     description?: string;
     color?: string;
+    lessonPlans?: LessonPlan[];
     createdAt: string;
 }
 

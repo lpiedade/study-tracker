@@ -87,14 +87,32 @@ export default function Subjects() {
                                         </div>
                                     ) : (
                                         <>
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-4 h-4 rounded-full" style={{ backgroundColor: subject.color }} />
-                                                <div>
-                                                    <h3 className="font-medium text-gray-900">{subject.name}</h3>
-                                                    <p className="text-sm text-gray-500">{subject.description || 'No description'}</p>
+                                            <div className="flex items-center gap-4 flex-1">
+                                                <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ backgroundColor: subject.color }} />
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="font-medium text-gray-900 truncate">{subject.name}</h3>
+                                                    <p className="text-sm text-gray-500 truncate">{subject.description || 'No description'}</p>
+
+                                                    {subject.lessonPlans && subject.lessonPlans.length > 0 && (
+                                                        <div className="mt-2 max-w-xs">
+                                                            <div className="flex justify-between text-xs text-gray-400 mb-1">
+                                                                <span>Progress: {subject.lessonPlans.filter(l => l.isCompleted).length}/{subject.lessonPlans.length} lessons</span>
+                                                                <span>{Math.round((subject.lessonPlans.filter(l => l.isCompleted).length / subject.lessonPlans.length) * 100)}%</span>
+                                                            </div>
+                                                            <div className="w-full bg-gray-100 rounded-full h-1.5">
+                                                                <div
+                                                                    className="h-1.5 rounded-full transition-all duration-300"
+                                                                    style={{
+                                                                        backgroundColor: subject.color || '#4f46e5',
+                                                                        width: `${(subject.lessonPlans.filter(l => l.isCompleted).length / subject.lessonPlans.length) * 100}%`
+                                                                    }}
+                                                                ></div>
+                                                            </div>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="flex gap-3">
+                                            <div className="flex gap-3 ml-4">
                                                 <button onClick={() => startEditing(subject)} className="text-gray-400 hover:text-indigo-600"><Edit2 className="w-5 h-5" /></button>
                                                 <button onClick={() => handleDelete(subject.id)} className="text-gray-400 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
                                             </div>
