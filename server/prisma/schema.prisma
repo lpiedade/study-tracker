@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model StudySession {
+  id        Int      @id @default(autoincrement())
+  subject   String
+  topic     String
+  startTime DateTime
+  endTime   DateTime
+  isReview  Boolean  @default(false)
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model LessonPlan {
+  id          Int      @id @default(autoincrement())
+  title       String
+  subject     String
+  content     String?
+  plannedDate DateTime
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model ExamResult {
+  id        Int      @id @default(autoincrement())
+  subject   String
+  score     Float
+  maxScore  Float
+  date      DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+}
