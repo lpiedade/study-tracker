@@ -145,6 +145,36 @@ app.put('/api/lessons/:id/complete', async (req, res) => {
     }
 });
 
+app.put('/api/lessons/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, subjectId, content, plannedDate } = req.body;
+        const lesson = await prisma.lessonPlan.update({
+            where: { id: Number(id) },
+            data: {
+                title,
+                subjectId: Number(subjectId),
+                content,
+                plannedDate: new Date(plannedDate)
+            },
+            include: { Subject: true }
+        });
+        res.json(lesson);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update lesson' });
+    }
+});
+
+app.delete('/api/lessons/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.lessonPlan.delete({ where: { id: Number(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete lesson' });
+    }
+});
+
 // --- Exam Results ---
 app.get('/api/exams', async (req, res) => {
     try {

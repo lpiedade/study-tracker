@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { CheckCircle, Clock, Plus, Trash2 } from 'lucide-react';
+import { CheckCircle, Clock, Plus, Trash2, Edit2, X } from 'lucide-react';
 import api from '../lib/api';
 import type { LessonPlan, StudySession, Subject } from '../types';
 import clsx from 'clsx';
@@ -15,6 +15,7 @@ export default function Planner() {
     // Form states
     const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
     const [newSession, setNewSession] = useState({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
+    const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
 
     const fetchData = async () => {
         try {
@@ -37,15 +38,44 @@ export default function Planner() {
         fetchData();
     }, []);
 
-    const handleCreateLesson = async (e: React.FormEvent) => {
+    const handleSaveLesson = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post('/lessons', newLesson);
+            if (editingLessonId) {
+                await api.put(`/lessons/${editingLessonId}`, newLesson);
+                setEditingLessonId(null);
+            } else {
+                await api.post('/lessons', newLesson);
+            }
             setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
             fetchData();
         } catch (err) {
-            alert('Failed to create lesson');
+            alert('Failed to save lesson');
         }
+    };
+
+    const handleDeleteLesson = async (id: number) => {
+        if (!confirm("Delete this lesson?")) return;
+        try {
+            await api.delete(`/lessons/${id}`);
+            fetchData();
+        } catch (err) {
+            alert('Failed to delete lesson');
+        }
+    };
+
+    const startEditingLesson = (lesson: LessonPlan) => {
+        setEditingLessonId(lesson.id);
+        setNewLesson({
+            title: lesson.title,
+            subjectId: lesson.subjectId.toString(),
+            plannedDate: format(new Date(lesson.plannedDate), 'yyyy-MM-dd')
+        });
+    };
+
+    const cancelEditing = () => {
+        setEditingLessonId(null);
+        setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
     };
 
     const handleCreateSession = async (e: React.FormEvent) => {
@@ -118,6 +148,14 @@ export default function Planner() {
                                                 </p>
                                             </div>
                                         </div>
+                                        <div className="flex items-center gap-2">
+                                            <button onClick={() => startEditingLesson(lesson)} className="text-gray-400 hover:text-indigo-600 transition-colors">
+                                                <Edit2 className="w-5 h-5" />
+                                            </button>
+                                            <button onClick={() => handleDeleteLesson(lesson.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -153,12 +191,21 @@ export default function Planner() {
 
                 {/* Add Form Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                        {activeTab === 'lessons' ? 'Add New Lesson' : 'Log Session'}
-                    </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                            {activeTab === 'lessons'
+                                ? (editingLessonId ? 'Edit Lesson' : 'Add New Lesson')
+                                : 'Log Session'}
+                        </h3>
+                        {editingLessonId && (
+                            <button onClick={cancelEditing} className="text-gray-400 hover:text-gray-600">
+                                <X className="w-5 h-5" />
+                            </button>
+                        )}
+                    </div>
 
                     {activeTab === 'lessons' ? (
-                        <form onSubmit={handleCreateLesson} className="space-y-4">
+                        <form onSubmit={handleSaveLesson} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                                 <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -178,7 +225,7 @@ export default function Planner() {
                                     value={newLesson.plannedDate} onChange={e => setNewLesson({ ...newLesson, plannedDate: e.target.value })} />
                             </div>
                             <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2">
-                                <Plus className="w-4 h-4" /> Add Lesson
+                                <Plus className="w-4 h-4" /> {editingLessonId ? 'Update Lesson' : 'Add Lesson'}
                             </button>
                         </form>
                     ) : (
