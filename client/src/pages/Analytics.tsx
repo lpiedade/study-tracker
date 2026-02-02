@@ -39,19 +39,26 @@ export default function Analytics() {
         .map(exam => ({
             date: format(new Date(exam.date), 'MMM d'),
             score: (exam.score / exam.maxScore) * 100,
-            subject: exam.subject
+            subject: exam.Subject?.name || 'Unknown'
         }));
 
     // 2. Study Hours by Subject
-    const subjectHours: Record<string, number> = {};
+    const subjectHours: Record<string, { hours: number, color: string }> = {};
     sessions.forEach(session => {
         const hours = (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60 * 60);
-        subjectHours[session.subject] = (subjectHours[session.subject] || 0) + hours;
+        const subjectName = session.Subject?.name || 'Unknown';
+        const color = session.Subject?.color || '#4f46e5';
+
+        if (!subjectHours[subjectName]) {
+            subjectHours[subjectName] = { hours: 0, color };
+        }
+        subjectHours[subjectName].hours += hours;
     });
 
-    const sessionData = Object.entries(subjectHours).map(([subject, hours]) => ({
+    const sessionData = Object.entries(subjectHours).map(([subject, data]) => ({
         subject,
-        hours: Math.round(hours * 10) / 10
+        hours: Math.round(data.hours * 10) / 10,
+        color: data.color
     }));
 
     return (
@@ -87,7 +94,11 @@ export default function Analytics() {
                                 <YAxis />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="hours" fill="#0ea5e9" name="Hours" />
+                                <Bar dataKey="hours" name="Hours">
+                                    {sessionData.map((entry, index) => (
+                                        <Bar key={`cell-${index}`} dataKey="hours" fill={entry.color} />
+                                    ))}
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

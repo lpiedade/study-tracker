@@ -7,9 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Subject {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  description   String?
+  color         String?
+  studySessions StudySession[]
+  lessonPlans   LessonPlan[]
+  examResults   ExamResult[]
+  createdAt     DateTime       @default(now())
+}
+
 model StudySession {
   id        Int      @id @default(autoincrement())
-  subject   String
+  subjectId Int
+  Subject   Subject  @relation(fields: [subjectId], references: [id])
   topic     String
   startTime DateTime
   endTime   DateTime
@@ -21,7 +33,8 @@ model StudySession {
 model LessonPlan {
   id          Int      @id @default(autoincrement())
   title       String
-  subject     String
+  subjectId   Int
+  Subject     Subject  @relation(fields: [subjectId], references: [id])
   content     String?
   plannedDate DateTime
   isCompleted Boolean  @default(false)
@@ -30,7 +43,8 @@ model LessonPlan {
 
 model ExamResult {
   id        Int      @id @default(autoincrement())
-  subject   String
+  subjectId Int
+  Subject   Subject  @relation(fields: [subjectId], references: [id])
   score     Float
   maxScore  Float
   date      DateTime

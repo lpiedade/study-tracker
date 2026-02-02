@@ -1,9 +1,10 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Calendar, GraduationCap, BarChart } from 'lucide-react';
+import { LayoutDashboard, Calendar, GraduationCap, BarChart, BookOpen } from 'lucide-react';
 import clsx from 'clsx';
 
 const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/subjects', label: 'Subjects', icon: BookOpen },
     { path: '/planner', label: 'Planner', icon: Calendar },
     { path: '/results', label: 'Results', icon: GraduationCap },
     { path: '/analytics', label: 'Analytics', icon: BarChart },

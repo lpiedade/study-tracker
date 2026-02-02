@@ -2,27 +2,30 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { CheckCircle, Clock, Plus, Trash2 } from 'lucide-react';
 import api from '../lib/api';
-import type { LessonPlan, StudySession } from '../types';
+import type { LessonPlan, StudySession, Subject } from '../types';
 import clsx from 'clsx';
 
 export default function Planner() {
     const [activeTab, setActiveTab] = useState<'lessons' | 'sessions'>('lessons');
     const [lessons, setLessons] = useState<LessonPlan[]>([]);
     const [sessions, setSessions] = useState<StudySession[]>([]);
+    const [subjects, setSubjects] = useState<Subject[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Form states
-    const [newLesson, setNewLesson] = useState({ title: '', subject: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
-    const [newSession, setNewSession] = useState({ subject: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
+    const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
+    const [newSession, setNewSession] = useState({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
 
     const fetchData = async () => {
         try {
-            const [lessonsRes, sessionsRes] = await Promise.all([
+            const [lessonsRes, sessionsRes, subjectsRes] = await Promise.all([
                 api.get('/lessons'),
-                api.get('/sessions')
+                api.get('/sessions'),
+                api.get('/subjects')
             ]);
             setLessons(lessonsRes.data);
             setSessions(sessionsRes.data);
+            setSubjects(subjectsRes.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -38,7 +41,7 @@ export default function Planner() {
         e.preventDefault();
         try {
             await api.post('/lessons', newLesson);
-            setNewLesson({ title: '', subject: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
+            setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd') });
             fetchData();
         } catch (err) {
             alert('Failed to create lesson');
@@ -49,7 +52,7 @@ export default function Planner() {
         e.preventDefault();
         try {
             await api.post('/sessions', newSession);
-            setNewSession({ subject: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
+            setNewSession({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
             fetchData();
         } catch (err) {
             alert('Failed to log session');
@@ -109,7 +112,10 @@ export default function Planner() {
                                             </button>
                                             <div>
                                                 <h3 className={clsx("font-medium text-gray-900", lesson.isCompleted && "line-through text-gray-500")}>{lesson.title}</h3>
-                                                <p className="text-sm text-gray-500">{lesson.subject} • {format(new Date(lesson.plannedDate), 'MMM d, yyyy')}</p>
+                                                <p className="text-sm text-gray-500">
+                                                    <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: lesson.Subject?.color }}></span>
+                                                    {lesson.Subject?.name || 'Unknown'} • {format(new Date(lesson.plannedDate), 'MMM d, yyyy')}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -123,7 +129,7 @@ export default function Planner() {
                                 {sessions.map(session => (
                                     <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50">
                                         <div>
-                                            <h3 className="font-medium text-gray-900">{session.subject}</h3>
+                                            <h3 className="font-medium text-gray-900">{session.Subject?.name || 'Unknown'}</h3>
                                             <p className="text-sm text-gray-500">{session.topic}</p>
                                             <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
                                                 <Clock className="w-3 h-3" />
@@ -160,8 +166,11 @@ export default function Planner() {
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    value={newLesson.subject} onChange={e => setNewLesson({ ...newLesson, subject: e.target.value })} />
+                                <select required className="w-full rounded-lg border-gray-300"
+                                    value={newLesson.subjectId} onChange={e => setNewLesson({ ...newLesson, subjectId: e.target.value })}>
+                                    <option value="">Select a Subject</option>
+                                    {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
@@ -176,8 +185,11 @@ export default function Planner() {
                         <form onSubmit={handleCreateSession} className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                    value={newSession.subject} onChange={e => setNewSession({ ...newSession, subject: e.target.value })} />
+                                <select required className="w-full rounded-lg border-gray-300"
+                                    value={newSession.subjectId} onChange={e => setNewSession({ ...newSession, subjectId: e.target.value })}>
+                                    <option value="">Select a Subject</option>
+                                    {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                </select>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Topic</label>

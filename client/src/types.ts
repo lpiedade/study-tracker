@@ -1,6 +1,15 @@
+export interface Subject {
+    id: number;
+    name: string;
+    description?: string;
+    color?: string;
+    createdAt: string;
+}
+
 export interface StudySession {
     id: number;
-    subject: string;
+    subjectId: number;
+    Subject?: Subject;
     topic: string;
     startTime: string;
     endTime: string;
@@ -11,7 +20,8 @@ export interface StudySession {
 export interface LessonPlan {
     id: number;
     title: string;
-    subject: string;
+    subjectId: number;
+    Subject?: Subject;
     content?: string;
     plannedDate: string;
     isCompleted: boolean;
@@ -19,7 +29,8 @@ export interface LessonPlan {
 
 export interface ExamResult {
     id: number;
-    subject: string;
+    subjectId: number;
+    Subject?: Subject;
     score: number;
     maxScore: number;
     date: string;

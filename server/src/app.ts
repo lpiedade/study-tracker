@@ -9,11 +9,60 @@ export const prisma = new PrismaClient();
 app.use(cors());
 app.use(express.json());
 
+// --- Subjects ---
+app.get('/api/subjects', async (req, res) => {
+    try {
+        const subjects = await prisma.subject.findMany({
+            orderBy: { name: 'asc' }
+        });
+        res.json(subjects);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch subjects' });
+    }
+});
+
+app.post('/api/subjects', async (req, res) => {
+    try {
+        const { name, description, color } = req.body;
+        const subject = await prisma.subject.create({
+            data: { name, description, color: color || '#4f46e5' }
+        });
+        res.json(subject);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create subject' });
+    }
+});
+
+app.put('/api/subjects/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, color } = req.body;
+        const subject = await prisma.subject.update({
+            where: { id: Number(id) },
+            data: { name, description, color }
+        });
+        res.json(subject);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update subject' });
+    }
+});
+
+app.delete('/api/subjects/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.subject.delete({ where: { id: Number(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete subject' });
+    }
+});
+
 // --- Study Sessions ---
 app.get('/api/sessions', async (req, res) => {
     try {
         const sessions = await prisma.studySession.findMany({
-            orderBy: { startTime: 'desc' }
+            orderBy: { startTime: 'desc' },
+            include: { Subject: true }
         });
         res.json(sessions);
     } catch (error) {
@@ -23,16 +72,17 @@ app.get('/api/sessions', async (req, res) => {
 
 app.post('/api/sessions', async (req, res) => {
     try {
-        const { subject, topic, startTime, endTime, isReview, notes } = req.body;
+        const { subjectId, topic, startTime, endTime, isReview, notes } = req.body;
         const session = await prisma.studySession.create({
             data: {
-                subject,
+                subjectId: Number(subjectId),
                 topic,
                 startTime: new Date(startTime),
                 endTime: new Date(endTime),
                 isReview,
                 notes
-            }
+            },
+            include: { Subject: true }
         });
         res.json(session);
     } catch (error) {
@@ -54,7 +104,8 @@ app.delete('/api/sessions/:id', async (req, res) => {
 app.get('/api/lessons', async (req, res) => {
     try {
         const lessons = await prisma.lessonPlan.findMany({
-            orderBy: { plannedDate: 'asc' }
+            orderBy: { plannedDate: 'asc' },
+            include: { Subject: true }
         });
         res.json(lessons);
     } catch (error) {
@@ -64,14 +115,15 @@ app.get('/api/lessons', async (req, res) => {
 
 app.post('/api/lessons', async (req, res) => {
     try {
-        const { title, subject, content, plannedDate } = req.body;
+        const { title, subjectId, content, plannedDate } = req.body;
         const lesson = await prisma.lessonPlan.create({
             data: {
                 title,
-                subject,
+                subjectId: Number(subjectId),
                 content,
                 plannedDate: new Date(plannedDate)
-            }
+            },
+            include: { Subject: true }
         });
         res.json(lesson);
     } catch (error) {
@@ -97,7 +149,8 @@ app.put('/api/lessons/:id/complete', async (req, res) => {
 app.get('/api/exams', async (req, res) => {
     try {
         const exams = await prisma.examResult.findMany({
-            orderBy: { date: 'desc' }
+            orderBy: { date: 'desc' },
+            include: { Subject: true }
         });
         res.json(exams);
     } catch (error) {
@@ -107,15 +160,16 @@ app.get('/api/exams', async (req, res) => {
 
 app.post('/api/exams', async (req, res) => {
     try {
-        const { subject, score, maxScore, date, notes } = req.body;
+        const { subjectId, score, maxScore, date, notes } = req.body;
         const exam = await prisma.examResult.create({
             data: {
-                subject,
+                subjectId: Number(subjectId),
                 score,
                 maxScore,
                 date: new Date(date),
                 notes
-            }
+            },
+            include: { Subject: true }
         });
         res.json(exam);
     } catch (error) {

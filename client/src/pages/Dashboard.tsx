@@ -81,7 +81,10 @@ export default function Dashboard() {
                         recentSessions.map((session) => (
                             <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                 <div>
-                                    <h4 className="font-medium text-gray-900">{session.subject}</h4>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: session.Subject?.color }} />
+                                        <h4 className="font-medium text-gray-900">{session.Subject?.name || 'Unknown'}</h4>
+                                    </div>
                                     <p className="text-sm text-gray-500">{session.topic}</p>
                                 </div>
                                 <div className="text-right">
