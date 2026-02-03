@@ -94,7 +94,7 @@ export default function Planner() {
         setNewLesson({
             title: lesson.title,
             subjectId: lesson.subjectId.toString(),
-            plannedDate: format(new Date(lesson.plannedDate), 'yyyy-MM-dd'),
+            plannedDate: new Date(lesson.plannedDate).toISOString().split('T')[0],
             templateId: '' // Templates are applied only on creation in this version
         });
     };
@@ -170,7 +170,7 @@ export default function Planner() {
                                                 <h3 className={clsx("font-medium text-gray-900", lesson.isCompleted && "line-through text-gray-500")}>{lesson.title}</h3>
                                                 <p className="text-sm text-gray-500">
                                                     <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: lesson.Subject?.color }}></span>
-                                                    {lesson.Subject?.name || 'Unknown'} • {format(new Date(lesson.plannedDate), 'MMM d, yyyy')}
+                                                    {lesson.Subject?.name || 'Unknown'} • {new Date(lesson.plannedDate).toLocaleDateString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' })}
                                                 </p>
 
                                                 {lesson.checklist && lesson.checklist.length > 0 && (
