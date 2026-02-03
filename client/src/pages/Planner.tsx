@@ -50,7 +50,10 @@ export default function Planner() {
             } else {
                 await api.post('/lessons', newLesson);
             }
-            setNewLesson({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
+            setNewLesson(prev => ({
+                ...prev,
+                title: ''
+            }));
             fetchData();
         } catch (err) {
             alert('Failed to save lesson');
