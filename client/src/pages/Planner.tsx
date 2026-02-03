@@ -15,7 +15,10 @@ export default function Planner() {
 
     // Form states
     const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
-    const [newSession, setNewSession] = useState({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
+    const [newSession, setNewSession] = useState<Omit<StudySession, 'id' | 'createdAt'>>({
+        subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: ''
+    });
+    const [deletingLessonId, setDeletingLessonId] = useState<number | null>(null);
     const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
 
     const fetchData = async () => {
@@ -60,16 +63,22 @@ export default function Planner() {
         }
     };
 
-    const handleDeleteLesson = async (id: number) => {
-        if (!confirm("Delete this lesson?")) return;
+    const handleDeleteClick = (id: number) => {
+        setDeletingLessonId(id);
+    };
+
+    const confirmDeleteLesson = async () => {
+        if (!deletingLessonId) return;
         try {
-            await api.delete(`/lessons/${id}`);
-            if (editingLessonId === id) {
+            await api.delete(`/lessons/${deletingLessonId}`);
+            if (editingLessonId === deletingLessonId) {
                 cancelEditing();
             }
             fetchData();
         } catch (err) {
             alert('Failed to delete lesson');
+        } finally {
+            setDeletingLessonId(null);
         }
     };
 
@@ -201,7 +210,7 @@ export default function Planner() {
                                             <button onClick={() => startEditingLesson(lesson)} className="text-gray-400 hover:text-indigo-600 transition-colors">
                                                 <Edit2 className="w-5 h-5" />
                                             </button>
-                                            <button onClick={() => handleDeleteLesson(lesson.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                            <button onClick={() => handleDeleteClick(lesson.id)} className="text-gray-400 hover:text-red-500 transition-colors">
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
                                         </div>
@@ -326,6 +335,33 @@ export default function Planner() {
                     )}
                 </div>
             </div>
-        </div>
+
+
+            {/* Custom Delete Confirmation Modal */}
+            {
+                deletingLessonId && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+                            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Lesson</h3>
+                            <p className="text-gray-600 mb-6">Are you sure you want to delete this lesson? This action cannot be undone.</p>
+                            <div className="flex justify-end gap-3">
+                                <button
+                                    onClick={() => setDeletingLessonId(null)}
+                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDeleteLesson}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+        </div >
     );
 }
