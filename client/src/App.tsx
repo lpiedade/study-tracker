@@ -6,6 +6,7 @@ import Results from './pages/Results';
 import Analytics from './pages/Analytics';
 import Subjects from './pages/Subjects';
 import Templates from './pages/Templates';
+import Calendar from './pages/Calendar';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="subjects" element={<Subjects />} />
           <Route path="templates" element={<Templates />} />
+          <Route path="calendar" element={<Calendar />} />
           <Route path="planner" element={<Planner />} />
           <Route path="results" element={<Results />} />
           <Route path="analytics" element={<Analytics />} />
