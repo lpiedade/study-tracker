@@ -28,6 +28,8 @@ model StudySession {
   isReview  Boolean  @default(false)
   notes     String?
   createdAt DateTime @default(now())
+  lessonPlanId Int?
+  LessonPlan   LessonPlan? @relation(fields: [lessonPlanId], references: [id])
 }
 
 model LessonPlan {
@@ -39,6 +41,7 @@ model LessonPlan {
   plannedDate DateTime
   isCompleted Boolean               @default(false)
   checklist   LessonChecklistItem[]
+  studySessions StudySession[]
   createdAt   DateTime              @default(now())
 }
 

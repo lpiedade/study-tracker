@@ -16,6 +16,8 @@ export interface StudySession {
     endTime: string;
     isReview: boolean;
     notes?: string;
+    lessonPlanId?: number;
+    LessonPlan?: LessonPlan;
 }
 
 export interface ChecklistTemplateItem {

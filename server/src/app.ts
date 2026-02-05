@@ -63,7 +63,7 @@ app.get('/api/sessions', async (req, res) => {
     try {
         const sessions = await prisma.studySession.findMany({
             orderBy: { startTime: 'desc' },
-            include: { Subject: true }
+            include: { Subject: true, LessonPlan: true }
         });
         res.json(sessions);
     } catch (error) {
@@ -73,17 +73,18 @@ app.get('/api/sessions', async (req, res) => {
 
 app.post('/api/sessions', async (req, res) => {
     try {
-        const { subjectId, topic, startTime, endTime, isReview, notes } = req.body;
+        const { subjectId, topic, startTime, endTime, isReview, notes, lessonPlanId } = req.body;
         const session = await prisma.studySession.create({
             data: {
                 subjectId: Number(subjectId),
+                lessonPlanId: lessonPlanId ? Number(lessonPlanId) : null,
                 topic,
                 startTime: new Date(startTime),
                 endTime: new Date(endTime),
                 isReview,
                 notes
             },
-            include: { Subject: true }
+            include: { Subject: true, LessonPlan: true }
         });
         res.json(session);
     } catch (error) {

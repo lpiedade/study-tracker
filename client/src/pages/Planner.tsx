@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { CheckCircle, Clock, Plus, Trash2, Edit2, X } from 'lucide-react';
+import { CheckCircle, Clock, Plus, Trash2, Edit2, X, BookOpen } from 'lucide-react';
 import api from '../lib/api';
 import type { LessonPlan, StudySession, Subject, ChecklistTemplate } from '../types';
 import clsx from 'clsx';
@@ -15,8 +15,16 @@ export default function Planner() {
 
     // Form states
     const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
-    const [newSession, setNewSession] = useState<Omit<StudySession, 'id' | 'createdAt'>>({
-        subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: ''
+    const [newSession, setNewSession] = useState<{
+        subjectId: string | number;
+        topic: string;
+        startTime: string;
+        endTime: string;
+        isReview: boolean;
+        notes: string;
+        lessonPlanId?: number;
+    }>({
+        subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined
     });
     const [deletingLessonId, setDeletingLessonId] = useState<number | null>(null);
     const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
@@ -108,7 +116,7 @@ export default function Planner() {
         e.preventDefault();
         try {
             await api.post('/sessions', newSession);
-            setNewSession({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '' });
+            setNewSession({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined });
             fetchData();
         } catch (err) {
             alert('Failed to log session');
@@ -231,6 +239,12 @@ export default function Planner() {
                                                 <Clock className="w-3 h-3" />
                                                 {format(new Date(session.startTime), 'MMM d, h:mm a')} - {format(new Date(session.endTime), 'h:mm a')}
                                             </div>
+                                            {session.LessonPlan && (
+                                                <div className="mt-1 flex items-center gap-2 text-xs text-indigo-600">
+                                                    <BookOpen className="w-3 h-3" />
+                                                    Lesson: {session.LessonPlan.title}
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-3">
                                             <span className={clsx("px-2 py-1 rounded text-xs font-medium", session.isReview ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700")}>
@@ -301,13 +315,23 @@ export default function Planner() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
                                 <select required className="w-full rounded-lg border-gray-300"
-                                    value={newSession.subjectId} onChange={e => setNewSession({ ...newSession, subjectId: e.target.value })}>
+                                    value={newSession.subjectId} onChange={e => setNewSession({ ...newSession, subjectId: e.target.value, lessonPlanId: undefined })}>
                                     <option value="">Select a Subject</option>
                                     {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Topic</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Linked Lesson (Optional)</label>
+                                <select className="w-full rounded-lg border-gray-300"
+                                    value={newSession.lessonPlanId || ''} onChange={e => setNewSession({ ...newSession, lessonPlanId: e.target.value ? Number(e.target.value) : undefined })}>
+                                    <option value="">No specific lesson</option>
+                                    {lessons
+                                        .filter(l => l.subjectId === Number(newSession.subjectId))
+                                        .map(l => <option key={l.id} value={l.id}>{l.title}</option>)}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                                 <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newSession.topic} onChange={e => setNewSession({ ...newSession, topic: e.target.value })} />
                             </div>

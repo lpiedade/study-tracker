@@ -95,6 +95,11 @@ export default function Dashboard() {
                                     <p className="text-sm text-gray-500 mt-1">
                                         {format(new Date(session.startTime), 'MMM d, h:mm a')}
                                     </p>
+                                    {session.LessonPlan && (
+                                        <p className="text-xs text-indigo-600 mt-1 truncate max-w-[150px]">
+                                            {session.LessonPlan.title}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         ))
