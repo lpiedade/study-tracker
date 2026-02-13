@@ -9,6 +9,14 @@ A local-first web application for study planning and tracking.
 - **Analytics**: Visualize score trends and study time distribution.
 - **Local Persistence**: Uses SQLite (`server/dev.db`).
 
+## Screenshots
+
+### Dashboard
+![Dashboard](assets/dashboard.png)
+
+### Calendar
+![Calendar View](assets/calendar.png)
+
 ## Prerequisites
 - Node.js (v18+)
 - npm

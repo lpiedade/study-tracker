@@ -144,6 +144,26 @@ app.delete('/api/templates/:id', async (req, res) => {
 });
 
 // --- Lesson Plans ---
+app.get('/api/lessons/upcoming', async (req, res) => {
+    try {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
+        const lessons = await prisma.lessonPlan.findMany({
+            where: {
+                plannedDate: { gte: today },
+                isCompleted: false
+            },
+            orderBy: { plannedDate: 'asc' },
+            take: 3,
+            include: { Subject: true }
+        });
+        res.json(lessons);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch upcoming lessons' });
+    }
+});
+
 app.get('/api/lessons', async (req, res) => {
     try {
         const lessons = await prisma.lessonPlan.findMany({
