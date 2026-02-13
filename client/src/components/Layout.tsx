@@ -22,7 +22,7 @@ export default function Layout() {
                 <div className="p-6">
                     <h1 className="text-2xl font-bold text-indigo-600 flex items-center gap-2">
                         <GraduationCap className="w-8 h-8" />
-                        StudyTrack
+                        StudyTracker
                     </h1>
                 </div>
                 <nav className="flex-1 px-4 space-y-2">

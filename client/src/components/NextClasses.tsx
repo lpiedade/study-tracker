@@ -12,7 +12,7 @@ export default function NextClasses() {
     useEffect(() => {
         const fetchUpcoming = async () => {
             try {
-                const response = await api.get('/api/lessons/upcoming');
+                const response = await api.get('/lessons/upcoming');
                 setUpcomingLessons(response.data);
             } catch (error) {
                 console.error("Failed to fetch upcoming lessons", error);
