@@ -61,7 +61,7 @@ export default function Results() {
                                     const percentage = (exam.score / exam.maxScore) * 100;
                                     return (
                                         <tr key={exam.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{exam.subject}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{exam.Subject?.name || 'Unknown'}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{format(new Date(exam.date), 'MMM d, yyyy')}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.score} / {exam.maxScore}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">

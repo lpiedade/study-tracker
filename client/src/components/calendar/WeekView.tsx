@@ -3,6 +3,7 @@ import { useDroppable } from "@dnd-kit/core";
 import clsx from "clsx";
 import type { LessonPlan } from "../../types";
 import LessonCard from "./LessonCard";
+import { isSameLocalDate } from "../../lib/dateUtils";
 
 interface WeekViewProps {
     currentDate: Date;
@@ -19,7 +20,7 @@ export default function WeekView({ currentDate, lessons, subjects, onDayClick }:
     return (
         <div className="grid grid-cols-7 gap-4 h-full min-h-[600px]">
             {days.map((day) => {
-                const dayLessons = lessons.filter(l => isSameDay(new Date(l.plannedDate), day));
+                const dayLessons = lessons.filter(l => isSameLocalDate(l.plannedDate, day));
                 // Calculate total hours planned (mock calculation as we don't have duration yet)
                 const totalHours = dayLessons.length;
 

@@ -4,6 +4,7 @@ import { CheckCircle, Clock, Plus, Trash2, Edit2, X, BookOpen } from 'lucide-rea
 import api from '../lib/api';
 import type { LessonPlan, StudySession, Subject, ChecklistTemplate } from '../types';
 import clsx from 'clsx';
+import { parseLocalDate } from '../lib/dateUtils';
 
 export default function Planner() {
     const [activeTab, setActiveTab] = useState<'lessons' | 'sessions'>('lessons');
@@ -55,11 +56,17 @@ export default function Planner() {
     const handleSaveLesson = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            // Fix date timezone issue: construct date from local midnight string to ensure correct day
+            const payload = {
+                ...newLesson,
+                plannedDate: new Date(newLesson.plannedDate + 'T00:00:00').toISOString()
+            };
+
             if (editingLessonId) {
-                await api.put(`/lessons/${editingLessonId}`, newLesson);
+                await api.put(`/lessons/${editingLessonId}`, payload);
                 setEditingLessonId(null);
             } else {
-                await api.post('/lessons', newLesson);
+                await api.post('/lessons', payload);
             }
             setNewLesson(prev => ({
                 ...prev,
@@ -99,10 +106,11 @@ export default function Planner() {
 
     const startEditingLesson = (lesson: LessonPlan) => {
         setEditingLessonId(lesson.id);
+        const parsedDate = parseLocalDate(lesson.plannedDate);
         setNewLesson({
             title: lesson.title,
             subjectId: lesson.subjectId.toString(),
-            plannedDate: new Date(lesson.plannedDate).toISOString().split('T')[0],
+            plannedDate: format(parsedDate, 'yyyy-MM-dd'),
             templateId: '' // Templates are applied only on creation in this version
         });
     };
@@ -178,7 +186,7 @@ export default function Planner() {
                                                 <h3 className={clsx("font-medium text-gray-900", lesson.isCompleted && "line-through text-gray-500")}>{lesson.title}</h3>
                                                 <p className="text-sm text-gray-500">
                                                     <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: lesson.Subject?.color }}></span>
-                                                    {lesson.Subject?.name || 'Unknown'} • {new Date(lesson.plannedDate).toLocaleDateString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    {lesson.Subject?.name || 'Unknown'} • {parseLocalDate(lesson.plannedDate).toLocaleDateString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' })}
                                                 </p>
 
                                                 {lesson.checklist && lesson.checklist.length > 0 && (

@@ -1,6 +1,7 @@
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isSameDay } from "date-fns";
 import clsx from "clsx";
 import type { LessonPlan } from "../../types";
+import { isSameLocalDate } from "../../lib/dateUtils";
 
 interface MonthViewProps {
     currentDate: Date;
@@ -35,7 +36,7 @@ export default function MonthView({ currentDate, lessons, subjects, onDayClick }
                 {/* We used flex-1 above to fill height, but grid layout needs explicit rows if we want uniform height. 
              Actually a simple grid with auto-rows is better. Let's adjust structure slightly. */}
                 {days.map((day) => {
-                    const dayLessons = lessons.filter(l => isSameDay(new Date(l.plannedDate), day));
+                    const dayLessons = lessons.filter(l => isSameLocalDate(l.plannedDate, day));
                     // Unique subjects on this day
                     const dailySubjectIds = Array.from(new Set(dayLessons.map(l => l.subjectId)));
                     const MAX_TILES = 6;

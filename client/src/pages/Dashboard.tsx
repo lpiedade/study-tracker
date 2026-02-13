@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Clock, BookOpen, Trophy, AlertCircle } from 'lucide-react';
+import NextClasses from '../components/NextClasses';
 import api from '../lib/api';
 import type { StatsSummary, StudySession } from '../types';
 import { format } from 'date-fns';
@@ -68,6 +69,9 @@ export default function Dashboard() {
                     subtext={overdue > 0 ? "Catch up needed!" : "On track"}
                 />
             </div>
+
+            {/* Next Classes */}
+            <NextClasses />
 
             {/* Recent Activity */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
