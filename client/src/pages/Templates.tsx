@@ -53,11 +53,13 @@ export default function Templates() {
         }
     };
 
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+
     const handleDeleteTemplate = async (id: number) => {
-        if (!confirm('Delete this template?')) return;
         try {
             await api.delete(`/templates/${id}`);
             fetchTemplates();
+            setDeletingId(null);
         } catch (err) {
             alert('Failed to delete template');
         }
@@ -72,8 +74,57 @@ export default function Templates() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* List Section */}
+                <div className="lg:col-span-2 space-y-4">
+                    {templates.length === 0 && (
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center text-gray-500">
+                            No templates created yet.
+                        </div>
+                    )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {templates.map(template => (
+                            <div key={template.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col">
+                                <div className="flex justify-between items-start mb-2">
+                                    <h4 className="font-bold text-gray-900">{template.name}</h4>
+                                    {deletingId === template.id ? (
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-red-600 font-medium">Sure?</span>
+                                            <button
+                                                onClick={() => handleDeleteTemplate(template.id)}
+                                                className="text-red-600 hover:text-red-700 font-bold text-xs"
+                                            >
+                                                Yes
+                                            </button>
+                                            <button
+                                                onClick={() => setDeletingId(null)}
+                                                className="text-gray-500 hover:text-gray-700 text-xs"
+                                            >
+                                                No
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button onClick={() => setDeletingId(template.id)} className="text-gray-400 hover:text-red-500">
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    )}
+                                </div>
+                                {template.description && <p className="text-sm text-gray-600 mb-4">{template.description}</p>}
+                                <div className="space-y-2 mt-auto">
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Items ({template.items.length})</p>
+                                    <ul className="text-sm text-gray-700 list-disc list-inside">
+                                        {template.items.slice(0, 3).map(item => (
+                                            <li key={item.id} className="truncate">{item.text}</li>
+                                        ))}
+                                        {template.items.length > 3 && <li className="text-xs text-gray-400 italic">+{template.items.length - 3} more</li>}
+                                    </ul>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
                 {/* Create Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit sticky top-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Template</h3>
                     <form onSubmit={handleCreateTemplate} className="space-y-4">
                         <div>
@@ -130,36 +181,6 @@ export default function Templates() {
                             <ClipboardList className="w-4 h-4" /> Create Template
                         </button>
                     </form>
-                </div>
-
-                {/* List Section */}
-                <div className="lg:col-span-2 space-y-4">
-                    {templates.length === 0 && (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center text-gray-500">
-                            No templates created yet.
-                        </div>
-                    )}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {templates.map(template => (
-                            <div key={template.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-bold text-gray-900">{template.name}</h4>
-                                    <button onClick={() => handleDeleteTemplate(template.id)} className="text-gray-400 hover:text-red-500">
-                                        <Trash2 className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                {template.description && <p className="text-sm text-gray-600 mb-4">{template.description}</p>}
-                                <div className="space-y-2 mt-auto">
-                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Items ({template.items.length})</p>
-                                    <ul className="text-sm text-gray-700 list-disc list-inside">
-                                        {template.items.map(item => (
-                                            <li key={item.id} className="truncate">{item.text}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </div>
         </div>
