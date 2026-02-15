@@ -9,6 +9,10 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./test/setup.ts'],
+    reporters: ['default', 'junit'],
+    outputFile: {
+      junit: './reports/junit.xml'
+    },
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
