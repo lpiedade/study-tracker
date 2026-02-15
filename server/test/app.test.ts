@@ -85,7 +85,12 @@ describe('Subjects API', () => {
     it('POST /api/subjects creates a subject', async () => {
         const res = await request(app)
             .post('/api/subjects')
-            .send({ name: 'Test Subject', description: 'Test', color: '#ff0000' });
+            .send({
+                name: 'Test Subject',
+                description: 'Test',
+                color: '#ff0000',
+                courseId: createdIds.courses[0]
+            });
         expect(res.status).toBe(200);
         expect(res.body.name).toBe('Test Subject');
         expect(res.body.color).toBe('#ff0000');
@@ -107,10 +112,21 @@ describe('Subjects API', () => {
     it('POST /api/subjects with default color', async () => {
         const res = await request(app)
             .post('/api/subjects')
-            .send({ name: 'Default Color Subject' });
+            .send({
+                name: 'Default Color Subject',
+                courseId: createdIds.courses[0]
+            });
         expect(res.status).toBe(200);
         expect(res.body.color).toBe('#4f46e5');
         createdIds.subjects.push(res.body.id);
+    });
+
+    it('POST /api/subjects returns 400 if courseId is missing', async () => {
+        const res = await request(app)
+            .post('/api/subjects')
+            .send({ name: 'No Course Subject' });
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Course is mandatory');
     });
 
     it('GET /api/subjects returns array with lessonPlans and Course', async () => {
@@ -122,14 +138,13 @@ describe('Subjects API', () => {
         expect(testSubj).toHaveProperty('lessonPlans');
     });
 
-    it('PUT /api/subjects/:id updates a subject', async () => {
+    it('PUT /api/subjects/:id returns 400 if courseId is missing', async () => {
         const id = createdIds.subjects[0];
         const res = await request(app)
             .put(`/api/subjects/${id}`)
             .send({ name: 'Updated Subject', description: 'Updated', color: '#00ff00', courseId: '' });
-        expect(res.status).toBe(200);
-        expect(res.body.name).toBe('Updated Subject');
-        expect(res.body.courseId).toBeNull();
+        expect(res.status).toBe(400);
+        expect(res.body.error).toBe('Course is mandatory');
     });
 
     it('PUT /api/subjects/:id with courseId', async () => {
@@ -144,7 +159,7 @@ describe('Subjects API', () => {
     it('DELETE /api/subjects/:id deletes a subject', async () => {
         const create = await request(app)
             .post('/api/subjects')
-            .send({ name: 'To Delete Subject' });
+            .send({ name: 'To Delete Subject', courseId: createdIds.courses[0] });
         const res = await request(app).delete(`/api/subjects/${create.body.id}`);
         expect(res.status).toBe(200);
         expect(res.body).toEqual({ success: true });
@@ -461,6 +476,20 @@ describe('Exams API', () => {
         expect(Array.isArray(res.body)).toBe(true);
         expect(res.body.length).toBeGreaterThanOrEqual(1);
     });
+
+    it('DELETE /api/exams/:id deletes an exam result', async () => {
+        const create = await request(app)
+            .post('/api/exams')
+            .send({
+                subjectId: createdIds.subjects[0],
+                score: 90,
+                maxScore: 100,
+                date: '2026-01-21',
+            });
+        const res = await request(app).delete(`/api/exams/${create.body.id}`);
+        expect(res.status).toBe(200);
+        expect(res.body).toEqual({ success: true });
+    });
 });
 
 // =============================================================
@@ -497,14 +526,14 @@ describe('Error paths', () => {
 
     // Subjects - POST with duplicate name (unique constraint)
     it('POST /api/subjects returns 500 on duplicate name', async () => {
-        const res = await request(app).post('/api/subjects').send({ name: 'Updated Subject' });
+        const res = await request(app).post('/api/subjects').send({ name: 'Updated Subject', courseId: createdIds.courses[0] });
         // 'Updated Subject' already exists from previous tests
         expect(res.status).toBe(500);
     });
 
     // Subjects - PUT non-existent
-    it('PUT /api/subjects/:id returns 500 for non-existent', async () => {
-        const res = await request(app).put('/api/subjects/999999').send({ name: 'X' });
+    it('PUT /api/subjects/:id returns 400/500 for non-existent', async () => {
+        const res = await request(app).put('/api/subjects/999999').send({ name: 'X', courseId: createdIds.courses[0] });
         expect(res.status).toBe(500);
     });
 

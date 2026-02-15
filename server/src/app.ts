@@ -1,10 +1,12 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+//import { PrismaClient } from '@prisma/client';
+import { prisma } from './prisma';
+export { prisma };
 
 export const app = express();
-export const prisma = new PrismaClient();
+//export const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(express.json());
@@ -61,12 +63,17 @@ app.get('/api/subjects', async (req, res) => {
 app.post('/api/subjects', async (req, res) => {
     try {
         const { name, description, color, courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ error: 'Course is mandatory' });
+        }
+
         const subject = await prisma.subject.create({
             data: {
                 name,
                 description,
                 color: color || '#4f46e5',
-                courseId: courseId ? Number(courseId) : null
+                courseId: Number(courseId)
             }
         });
         res.json(subject);
@@ -79,13 +86,18 @@ app.put('/api/subjects/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { name, description, color, courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ error: 'Course is mandatory' });
+        }
+
         const subject = await prisma.subject.update({
             where: { id: Number(id) },
             data: {
                 name,
                 description,
                 color,
-                courseId: courseId ? Number(courseId) : null
+                courseId: Number(courseId)
             }
         });
         res.json(subject);
@@ -152,7 +164,7 @@ app.delete('/api/sessions/:id', async (req, res) => {
 app.get('/api/templates', async (req, res) => {
     try {
         const templates = await prisma.checklistTemplate.findMany({
-            include: { items: { orderBy: { order: 'asc' } } }
+            include: { items: true }
         });
         res.json(templates);
     } catch (error) {
@@ -360,6 +372,16 @@ app.post('/api/exams', async (req, res) => {
         res.json(exam);
     } catch (error) {
         res.status(500).json({ error: 'Failed to create exam result' });
+    }
+});
+
+app.delete('/api/exams/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.examResult.delete({ where: { id: Number(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete exam result' });
     }
 });
 
