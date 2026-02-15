@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseLocalDate, isSameLocalDate } from './dateUtils';
+import { parseLocalDate, isSameLocalDate } from '../../src/lib/dateUtils';
 
 describe('parseLocalDate', () => {
     it('parses YYYY-MM-DD string to local midnight', () => {

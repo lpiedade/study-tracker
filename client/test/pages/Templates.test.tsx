@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 const mockGet = vi.fn();
 const mockPost = vi.fn();
 const mockDelete = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: {
         get: (...args: any[]) => mockGet(...args),
         post: (...args: any[]) => mockPost(...args),
@@ -116,9 +116,9 @@ describe('Templates', () => {
         const addBtn = screen.getAllByText(/Add Item/)[0];
         fireEvent.click(addBtn);
 
-        // Should now have 2 input fields (original + new)
+        // Should now have 3 input fields (name + 2 items)
         const inputs = screen.getByPlaceholderText('e.g. Math Lesson Base').closest('form')!.querySelectorAll('input[type="text"]');
-        expect(inputs.length).toBe(1); // The name input only, items are separate inputs too
+        expect(inputs.length).toBe(3);
     });
 
     it('triggers delete confirmation flow', async () => {

@@ -1,17 +1,16 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import App from './App';
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import App from '../src/App';
 
 // Mock all pages to avoid deep rendering
-vi.mock('./pages/Dashboard', () => ({ default: () => <div data-testid="dashboard">Dashboard</div> }));
-vi.mock('./pages/Subjects', () => ({ default: () => <div data-testid="subjects">Subjects</div> }));
-vi.mock('./pages/Courses', () => ({ default: () => <div data-testid="courses">Courses</div> }));
-vi.mock('./pages/Templates', () => ({ default: () => <div data-testid="templates">Templates</div> }));
-vi.mock('./pages/Calendar', () => ({ default: () => <div data-testid="calendar">Calendar</div> }));
-vi.mock('./pages/Planner', () => ({ default: () => <div data-testid="planner">Planner</div> }));
-vi.mock('./pages/Results', () => ({ default: () => <div data-testid="results">Results</div> }));
-vi.mock('./pages/Analytics', () => ({ default: () => <div data-testid="analytics">Analytics</div> }));
+vi.mock('../src/pages/Dashboard', () => ({ default: () => <div data-testid="dashboard">Dashboard</div> }));
+vi.mock('../src/pages/Subjects', () => ({ default: () => <div data-testid="subjects">Subjects</div> }));
+vi.mock('../src/pages/Courses', () => ({ default: () => <div data-testid="courses">Courses</div> }));
+vi.mock('../src/pages/Templates', () => ({ default: () => <div data-testid="templates">Templates</div> }));
+vi.mock('../src/pages/Calendar', () => ({ default: () => <div data-testid="calendar">Calendar</div> }));
+vi.mock('../src/pages/Planner', () => ({ default: () => <div data-testid="planner">Planner</div> }));
+vi.mock('../src/pages/Results', () => ({ default: () => <div data-testid="results">Results</div> }));
+vi.mock('../src/pages/Analytics', () => ({ default: () => <div data-testid="analytics">Analytics</div> }));
 
 // Note: App uses BrowserRouter internally but we test it as-is since BrowserRouter is fine in test env
 describe('App', () => {

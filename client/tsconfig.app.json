@@ -10,7 +10,9 @@
     ],
     "module": "ESNext",
     "types": [
-      "vite/client"
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom"
     ],
     "skipLibCheck": true,
     /* Bundler mode */
@@ -30,18 +32,7 @@
   },
   "include": [
     "src",
-    "test/components/calendar/CalendarHeader.test.tsx",
-    "test/components/calendar/LessonCard.test.tsx",
-    "test/components/calendar/MonthView.test.tsx",
-    "test/components/calendar/WeekView.test.tsx",
-    "test/pages/Analytics.test.tsx",
-    "test/pages/Calendar.test.tsx",
-    "test/pages/Courses.test.tsx",
-    "test/pages/Dashboard.test.tsx",
-    "test/pages/Planner.test.tsx",
-    "test/pages/Results.test.tsx",
-    "test/pages/Subjects.test.tsx",
-    "test/pages/Templates.test.tsx",
-    "test/setup.ts"
+    "test/**/*.ts",
+    "test/**/*.tsx"
   ]
 }

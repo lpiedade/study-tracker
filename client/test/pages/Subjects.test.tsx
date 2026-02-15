@@ -7,7 +7,7 @@ const mockGet = vi.fn();
 const mockPost = vi.fn();
 const mockPut = vi.fn();
 const mockDelete = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: {
         get: (...args: any[]) => mockGet(...args),
         post: (...args: any[]) => mockPost(...args),
@@ -102,10 +102,17 @@ describe('Subjects', () => {
 
         const nameInput = screen.getByRole('textbox', { name: /name/i });
         await userEvent.type(nameInput, 'New Subject');
+
+        const courseSelect = screen.getByRole('combobox');
+        await userEvent.selectOptions(courseSelect, '1');
+
         fireEvent.submit(nameInput.closest('form')!);
 
         await waitFor(() => {
-            expect(mockPost).toHaveBeenCalled();
+            expect(mockPost).toHaveBeenCalledWith('/subjects', expect.objectContaining({
+                name: 'New Subject',
+                courseId: '1'
+            }));
         });
     });
 

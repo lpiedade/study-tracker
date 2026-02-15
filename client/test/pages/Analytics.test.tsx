@@ -3,15 +3,15 @@ import { render, screen, waitFor } from '@testing-library/react';
 import Analytics from '../../src/pages/Analytics';
 
 const mockGet = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: { get: (...args: any[]) => mockGet(...args) },
 }));
 
 // Mock recharts since it requires DOM measurements
 vi.mock('recharts', () => ({
     ResponsiveContainer: ({ children }: any) => <div data-testid="chart-container">{children}</div>,
-    LineChart: ({ children }: any) => <div data-testid="line-chart">{children}</div>,
-    BarChart: ({ children }: any) => <div data-testid="bar-chart">{children}</div>,
+    LineChart: ({ children, data }: any) => <div data-testid="line-chart" data-data={JSON.stringify(data)}>{children}</div>,
+    BarChart: ({ children, data }: any) => <div data-testid="bar-chart" data-data={JSON.stringify(data)}>{children}</div>,
     Line: () => <div />,
     Bar: ({ children }: any) => <div>{children}</div>,
     XAxis: () => <div />,
@@ -52,6 +52,40 @@ describe('Analytics', () => {
             expect(screen.getByText('Score Trend (%)')).toBeInTheDocument();
             expect(screen.getByText('Study Hours by Subject')).toBeInTheDocument();
         });
+
+        // Verify data passed to charts
+        const lineChart = screen.getByTestId('line-chart');
+        const lineData = JSON.parse(lineChart.getAttribute('data-data') || '[]');
+        expect(lineData[0].score).toBe(80);
+
+        const barChart = screen.getByTestId('bar-chart');
+        const barData = JSON.parse(barChart.getAttribute('data-data') || '[]');
+        expect(barData[0].hours).toBe(2); // 10:00 to 12:00
+    });
+
+    it('processes session data for multiple subjects correctly', async () => {
+        mockGet.mockImplementation((url: string) => {
+            if (url === '/exams') return Promise.resolve({ data: [] });
+            if (url === '/sessions') return Promise.resolve({
+                data: [
+                    { id: 1, startTime: '2026-01-10T08:00:00Z', endTime: '2026-01-10T10:00:00Z', Subject: { name: 'Math', color: '#f00' } },
+                    { id: 2, startTime: '2026-01-11T08:00:00Z', endTime: '2026-01-11T09:00:00Z', Subject: { name: 'Math', color: '#f00' } },
+                    { id: 3, startTime: '2026-01-11T08:00:00Z', endTime: '2026-01-11T10:00:00Z', Subject: { name: 'Physics', color: '#0f0' } },
+                ],
+            });
+            return Promise.resolve({ data: [] });
+        });
+        render(<Analytics />);
+        await waitFor(() => {
+            const barChart = screen.getByTestId('bar-chart');
+            const barData = JSON.parse(barChart.getAttribute('data-data') || '[]');
+
+            const math = barData.find((d: any) => d.subject === 'Math');
+            const physics = barData.find((d: any) => d.subject === 'Physics');
+
+            expect(math.hours).toBe(3); // 2h + 1h
+            expect(physics.hours).toBe(2); // 2h
+        });
     });
 
     it('handles empty data', async () => {
@@ -64,24 +98,6 @@ describe('Analytics', () => {
 
     it('handles API error', async () => {
         mockGet.mockRejectedValue(new Error('fail'));
-        render(<Analytics />);
-        await waitFor(() => {
-            expect(screen.getByText('Analytics')).toBeInTheDocument();
-        });
-    });
-
-    it('processes session data for subject hours', async () => {
-        mockGet.mockImplementation((url: string) => {
-            if (url === '/exams') return Promise.resolve({ data: [] });
-            if (url === '/sessions') return Promise.resolve({
-                data: [
-                    { id: 1, startTime: '2026-01-10T08:00:00Z', endTime: '2026-01-10T10:00:00Z', Subject: { name: 'Math', color: '#f00' } },
-                    { id: 2, startTime: '2026-01-11T08:00:00Z', endTime: '2026-01-11T09:00:00Z', Subject: { name: 'Math', color: '#f00' } },
-                    { id: 3, startTime: '2026-01-11T08:00:00Z', endTime: '2026-01-11T10:00:00Z', Subject: { name: 'Physics', color: '#0f0' } },
-                ],
-            });
-            return Promise.resolve({ data: [] });
-        });
         render(<Analytics />);
         await waitFor(() => {
             expect(screen.getByText('Analytics')).toBeInTheDocument();

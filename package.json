@@ -1,0 +1,11 @@
+{
+    "name": "study-tracker-root",
+    "private": true,
+    "workspaces": [
+        "client",
+        "server"
+    ],
+    "scripts": {
+        "test": "npm test --workspaces"
+    }
+}

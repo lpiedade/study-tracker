@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 const mockGet = vi.fn();
 const mockPost = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: {
         get: (...args: any[]) => mockGet(...args),
         post: (...args: any[]) => mockPost(...args),
@@ -18,6 +18,14 @@ describe('Results', () => {
         vi.spyOn(window, 'alert').mockImplementation(() => { });
     });
 
+    const setupMocks = (exams: any[] = [], subjects: any[] = []) => {
+        mockGet.mockImplementation((url: string) => {
+            if (url === '/exams') return Promise.resolve({ data: exams });
+            if (url === '/subjects') return Promise.resolve({ data: subjects });
+            return Promise.resolve({ data: [] });
+        });
+    };
+
     it('shows loading', () => {
         mockGet.mockReturnValue(new Promise(() => { }));
         render(<Results />);
@@ -25,7 +33,7 @@ describe('Results', () => {
     });
 
     it('shows empty state', async () => {
-        mockGet.mockResolvedValue({ data: [] });
+        setupMocks([], []);
         render(<Results />);
         await waitFor(() => {
             expect(screen.getByText('No exam results recorded.')).toBeInTheDocument();
@@ -33,9 +41,10 @@ describe('Results', () => {
     });
 
     it('renders exam results with passing scores (green)', async () => {
-        mockGet.mockResolvedValue({
-            data: [{ id: 1, score: 85, maxScore: 100, date: '2026-01-20', Subject: { name: 'Math' } }],
-        });
+        setupMocks(
+            [{ id: 1, score: 85, maxScore: 100, date: '2026-01-20', Subject: { name: 'Math' } }],
+            []
+        );
         render(<Results />);
         await waitFor(() => {
             expect(screen.getByText('Math')).toBeInTheDocument();
@@ -46,9 +55,10 @@ describe('Results', () => {
     });
 
     it('renders failing scores with red badge', async () => {
-        mockGet.mockResolvedValue({
-            data: [{ id: 2, score: 50, maxScore: 100, date: '2026-01-20', Subject: { name: 'Physics' } }],
-        });
+        setupMocks(
+            [{ id: 2, score: 50, maxScore: 100, date: '2026-01-20', Subject: { name: 'Physics' } }],
+            []
+        );
         render(<Results />);
         await waitFor(() => {
             const badge = screen.getByText('50.0%');
@@ -57,9 +67,10 @@ describe('Results', () => {
     });
 
     it('renders Unknown for missing subject', async () => {
-        mockGet.mockResolvedValue({
-            data: [{ id: 3, score: 70, maxScore: 100, date: '2026-01-20' }],
-        });
+        setupMocks(
+            [{ id: 3, score: 70, maxScore: 100, date: '2026-01-20' }],
+            []
+        );
         render(<Results />);
         await waitFor(() => {
             expect(screen.getByText('Unknown')).toBeInTheDocument();
@@ -67,34 +78,38 @@ describe('Results', () => {
     });
 
     it('renders form and submits exam result', async () => {
-        mockGet.mockResolvedValue({ data: [] });
+        setupMocks([], [{ id: 1, name: 'Chemistry' }]);
         mockPost.mockResolvedValue({});
         render(<Results />);
         await waitFor(() => {
             expect(screen.getByText('Add Result')).toBeInTheDocument();
         });
 
-        // Find the subject input in the form
-        const subjectInput = screen.getByRole('textbox');
-        await userEvent.type(subjectInput, 'Chemistry');
-        fireEvent.submit(subjectInput.closest('form')!);
+        // Use select for subject
+        const subjectSelect = screen.getByRole('combobox');
+        await userEvent.selectOptions(subjectSelect, '1');
+
+        // Note: score and maxScore are number inputs, so they don't have 'combobox' or 'textbox' usually.
+        // But for this test we only focus on the subject and submission.
+
+        fireEvent.submit(subjectSelect.closest('form')!);
 
         await waitFor(() => {
-            expect(mockPost).toHaveBeenCalledWith('/exams', expect.objectContaining({ subject: 'Chemistry' }));
+            expect(mockPost).toHaveBeenCalledWith('/exams', expect.objectContaining({ subjectId: '1' }));
         });
     });
 
     it('shows alert on submit error', async () => {
-        mockGet.mockResolvedValue({ data: [] });
+        setupMocks([], [{ id: 1, name: 'Fail' }]);
         mockPost.mockRejectedValue(new Error('fail'));
         render(<Results />);
         await waitFor(() => {
             expect(screen.getByText('Add Result')).toBeInTheDocument();
         });
 
-        const subjectInput = screen.getByRole('textbox');
-        await userEvent.type(subjectInput, 'Fail');
-        fireEvent.submit(subjectInput.closest('form')!);
+        const subjectSelect = screen.getByRole('combobox');
+        await userEvent.selectOptions(subjectSelect, '1');
+        fireEvent.submit(subjectSelect.closest('form')!);
 
         await waitFor(() => {
             expect(window.alert).toHaveBeenCalledWith('Failed to add result');

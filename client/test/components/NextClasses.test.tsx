@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import NextClasses from './NextClasses';
+import NextClasses from '../../src/components/NextClasses';
 
 const mockGet = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: { get: (...args: any[]) => mockGet(...args) },
 }));
 

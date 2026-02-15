@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 const mockGet = vi.fn();
 const mockPost = vi.fn();
 const mockDelete = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: {
         get: (...args: any[]) => mockGet(...args),
         post: (...args: any[]) => mockPost(...args),

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import Layout from './Layout';
+import Layout from '../../src/components/Layout';
 
 describe('Layout', () => {
     it('renders the app title', () => {

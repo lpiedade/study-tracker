@@ -4,7 +4,7 @@ import Calendar from '../../src/pages/Calendar';
 
 const mockGet = vi.fn();
 const mockPut = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: {
         get: (...args: any[]) => mockGet(...args),
         put: (...args: any[]) => mockPut(...args),
@@ -23,13 +23,13 @@ vi.mock('@dnd-kit/core', () => ({
 }));
 
 // Mock child components to simplify
-vi.mock('../components/calendar/WeekView', () => ({
+vi.mock('../../src/components/calendar/WeekView', () => ({
     default: () => <div data-testid="week-view">Week View</div>,
 }));
-vi.mock('../components/calendar/MonthView', () => ({
+vi.mock('../../src/components/calendar/MonthView', () => ({
     default: () => <div data-testid="month-view">Month View</div>,
 }));
-vi.mock('../components/calendar/CalendarHeader', () => ({
+vi.mock('../../src/components/calendar/CalendarHeader', () => ({
     default: ({ view, onViewChange, onNavigate }: any) => (
         <div data-testid="calendar-header">
             <span>{view}</span>

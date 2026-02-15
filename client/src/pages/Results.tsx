@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import { Plus, Trophy } from 'lucide-react';
+import { Plus, Trophy, Trash2 } from 'lucide-react';
 import api from '../lib/api';
 import type { ExamResult } from '../types';
 
 export default function Results() {
     const [exams, setExams] = useState<ExamResult[]>([]);
-    const [newExam, setNewExam] = useState({ subject: '', score: 0, maxScore: 100, date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
+    const [subjects, setSubjects] = useState<{ id: number; name: string }[]>([]);
+    const [newExam, setNewExam] = useState({ subjectId: '', score: 0, maxScore: 100, date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
         try {
-            const res = await api.get('/exams');
-            setExams(res.data);
+            const [examsRes, subjectsRes] = await Promise.all([
+                api.get('/exams'),
+                api.get('/subjects')
+            ]);
+            setExams(examsRes.data);
+            setSubjects(subjectsRes.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -24,11 +29,21 @@ export default function Results() {
         fetchData();
     }, []);
 
+    const handleDelete = async (id: number) => {
+        if (!confirm('Are you sure you want to delete this result?')) return;
+        try {
+            await api.delete(`/exams/${id}`);
+            fetchData();
+        } catch (err) {
+            alert('Failed to delete result');
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await api.post('/exams', newExam);
-            setNewExam({ subject: '', score: 0, maxScore: 100, date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
+            setNewExam({ subjectId: '', score: 0, maxScore: 100, date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
             fetchData();
         } catch (err) {
             alert('Failed to add result');
@@ -51,6 +66,7 @@ export default function Results() {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Percentage</th>
+                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -69,6 +85,11 @@ export default function Results() {
                                                     {percentage.toFixed(1)}%
                                                 </span>
                                             </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <button onClick={() => handleDelete(exam.id)} className="text-red-600 hover:text-red-900 ml-4 transition-colors">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </td>
                                         </tr>
                                     );
                                 })}
@@ -84,8 +105,11 @@ export default function Results() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                            <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                value={newExam.subject} onChange={e => setNewExam({ ...newExam, subject: e.target.value })} />
+                            <select required className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                value={newExam.subjectId} onChange={e => setNewExam({ ...newExam, subjectId: e.target.value })}>
+                                <option value="" disabled>Select a Subject</option>
+                                {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                            </select>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>

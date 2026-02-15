@@ -106,8 +106,9 @@ export default function Courses() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Course</h3>
                     <form onSubmit={handleCreateCourse} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <label htmlFor="course-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                             <input
+                                id="course-name"
                                 required
                                 type="text"
                                 className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
@@ -117,8 +118,9 @@ export default function Courses() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <label htmlFor="course-desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <textarea
+                                id="course-desc"
                                 className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 rows={2}
                                 value={newDesc}

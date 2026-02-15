@@ -34,7 +34,6 @@ export default function Subjects() {
         e.preventDefault();
         try {
             await api.post('/subjects', newForm);
-            await api.post('/subjects', newForm);
             setNewForm({ name: '', description: '', color: '#4f46e5', courseId: '' });
             fetchData();
         } catch (err) {
@@ -44,8 +43,6 @@ export default function Subjects() {
 
     const handleUpdate = async (id: number) => {
         try {
-            await api.put(`/subjects/${id}`, editForm);
-            setEditingId(null);
             await api.put(`/subjects/${id}`, editForm);
             setEditingId(null);
             fetchData();
@@ -58,7 +55,6 @@ export default function Subjects() {
         if (!confirm('Are you sure? This will affect all linked sessions and lessons.')) return;
         try {
             await api.delete(`/subjects/${id}`);
-            await api.delete(`/subjects/${id}`);
             fetchData();
         } catch (err) {
             alert('Failed to delete subject');
@@ -67,15 +63,12 @@ export default function Subjects() {
 
     const startEditing = (subject: Subject) => {
         setEditingId(subject.id);
-        const startEditing = (subject: Subject) => {
-            setEditingId(subject.id);
-            setEditForm({
-                name: subject.name,
-                description: subject.description || '',
-                color: subject.color || '#4f46e5',
-                courseId: subject.courseId?.toString() || ''
-            });
-        };
+        setEditForm({
+            name: subject.name,
+            description: subject.description || '',
+            color: subject.color || '#4f46e5',
+            courseId: subject.courseId?.toString() || ''
+        });
     };
 
     if (loading) return <div className="p-8">Loading subjects...</div>;
@@ -96,9 +89,8 @@ export default function Subjects() {
                                         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 mr-4">
                                             <input className="rounded border-gray-300 text-sm" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
                                             <input className="rounded border-gray-300 text-sm" value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} placeholder="Description" />
-                                            <input className="rounded border-gray-300 text-sm" value={editForm.description} onChange={e => setEditForm({ ...editForm, description: e.target.value })} placeholder="Description" />
-                                            <select className="rounded border-gray-300 text-sm" value={editForm.courseId} onChange={e => setEditForm({ ...editForm, courseId: e.target.value })}>
-                                                <option value="">No Course</option>
+                                            <select required className="rounded border-gray-300 text-sm" value={editForm.courseId} onChange={e => setEditForm({ ...editForm, courseId: e.target.value })}>
+                                                <option value="" disabled>Select a Course</option>
                                                 {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                                             </select>
                                             <div className="flex gap-2">
@@ -112,7 +104,6 @@ export default function Subjects() {
                                             <div className="flex items-center gap-4 flex-1">
                                                 <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ backgroundColor: subject.color }} />
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="font-medium text-gray-900 truncate">{subject.name}</h3>
                                                     <h3 className="font-medium text-gray-900 truncate">{subject.name}</h3>
                                                     {subject.Course && (
                                                         <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 mb-1">
@@ -157,23 +148,23 @@ export default function Subjects() {
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Subject</h3>
                     <form onSubmit={handleCreate} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                            <input required type="text" className="w-full rounded-lg border-gray-300" value={newForm.name} onChange={e => setNewForm({ ...newForm, name: e.target.value })} />
+                            <label htmlFor="subject-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <input id="subject-name" required type="text" className="w-full rounded-lg border-gray-300" value={newForm.name} onChange={e => setNewForm({ ...newForm, name: e.target.value })} />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <input type="text" className="w-full rounded-lg border-gray-300" value={newForm.description} onChange={e => setNewForm({ ...newForm, description: e.target.value })} />
+                            <label htmlFor="subject-desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <input id="subject-desc" type="text" className="w-full rounded-lg border-gray-300" value={newForm.description} onChange={e => setNewForm({ ...newForm, description: e.target.value })} />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
-                            <select className="w-full rounded-lg border-gray-300" value={newForm.courseId} onChange={e => setNewForm({ ...newForm, courseId: e.target.value })}>
-                                <option value="">Select a Course (Optional)</option>
+                            <label htmlFor="subject-course" className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                            <select id="subject-course" required className="w-full rounded-lg border-gray-300" value={newForm.courseId} onChange={e => setNewForm({ ...newForm, courseId: e.target.value })}>
+                                <option value="" disabled>Select a Course</option>
                                 {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
-                            <input type="color" className="w-full h-10 rounded-lg p-1" value={newForm.color} onChange={e => setNewForm({ ...newForm, color: e.target.value })} />
+                            <label htmlFor="subject-color" className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                            <input id="subject-color" type="color" className="w-full h-10 rounded-lg p-1" value={newForm.color} onChange={e => setNewForm({ ...newForm, color: e.target.value })} />
                         </div>
                         <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-2">
                             <Plus className="w-4 h-4" /> Add Subject

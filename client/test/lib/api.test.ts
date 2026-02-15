@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import api from './api';
+import api from '../../src/lib/api';
 
 describe('api', () => {
     it('is an axios instance with correct baseURL', () => {

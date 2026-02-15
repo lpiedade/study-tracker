@@ -7,7 +7,7 @@ const mockGet = vi.fn();
 const mockPost = vi.fn();
 const mockPut = vi.fn();
 const mockDelete = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: {
         get: (...args: any[]) => mockGet(...args),
         post: (...args: any[]) => mockPost(...args),
@@ -194,7 +194,7 @@ describe('Planner', () => {
         await userEvent.type(titleInput, 'New Lesson');
 
         // Select subject
-        const subjectSelect = screen.getByRole('combobox', { name: /subject/i }) as HTMLSelectElement;
+        const subjectSelect = screen.getByLabelText(/subject/i) as HTMLSelectElement;
         await userEvent.selectOptions(subjectSelect, '1');
 
         fireEvent.submit(titleInput.closest('form')!);
@@ -305,11 +305,11 @@ describe('Planner', () => {
         });
 
         // Fill subject
-        const subjectSelects = screen.getAllByRole('combobox');
-        await userEvent.selectOptions(subjectSelects[0], '1');
+        const subjectSelect = screen.getByLabelText(/subject/i) as HTMLSelectElement;
+        await userEvent.selectOptions(subjectSelect, '1');
 
         // Fill topic
-        const topicInput = screen.getByRole('textbox');
+        const topicInput = screen.getByLabelText(/description/i);
         await userEvent.type(topicInput, 'Study topic');
 
         fireEvent.submit(topicInput.closest('form')!);

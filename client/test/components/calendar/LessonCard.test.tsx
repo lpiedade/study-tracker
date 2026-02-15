@@ -3,14 +3,16 @@ import { render, screen } from '@testing-library/react';
 import LessonCard from '../../../src/components/calendar/LessonCard';
 
 // Mock dnd-kit
+const mockUseDraggable = vi.fn(() => ({
+    setNodeRef: vi.fn(),
+    attributes: {},
+    listeners: {},
+    transform: null,
+    isDragging: false,
+}));
+
 vi.mock('@dnd-kit/core', () => ({
-    useDraggable: () => ({
-        setNodeRef: vi.fn(),
-        attributes: {},
-        listeners: {},
-        transform: null,
-        isDragging: false,
-    }),
+    useDraggable: () => mockUseDraggable(),
 }));
 
 describe('LessonCard', () => {
@@ -31,8 +33,8 @@ describe('LessonCard', () => {
         const pastDate = new Date(2020, 0, 1).toISOString();
         const lesson = { id: 3, title: 'Missed', subjectId: 1, plannedDate: pastDate, isCompleted: false, checklist: [] } as any;
         const { container } = render(<LessonCard lesson={lesson} />);
-        // Should render AlertCircle icon for missed
-        expect(container.querySelector('.lucide-alert-circle')).toBeTruthy();
+        // Lucide icons render as svg. AlertCircle often has a class with it or just look for the svg.
+        expect(container.querySelector('svg.text-red-500')).toBeTruthy();
     });
 
     it('renders checklist progress bar', () => {
@@ -54,21 +56,30 @@ describe('LessonCard', () => {
         const lesson = { id: 5, title: 'Default', subjectId: 1, plannedDate: '2026-03-01', isCompleted: false, checklist: [] } as any;
         const { container } = render(<LessonCard lesson={lesson} />);
         const stripe = container.querySelector('.absolute.left-0');
-        expect(stripe?.getAttribute('style')).toContain('#4f46e5');
+        const style = stripe?.getAttribute('style');
+        // Check for both hex and rgb formats
+        expect(style).toMatch(/background-color:\s*(#4f46e5|rgb\(79,\s*70,\s*229\))/i);
     });
 
     it('renders with dragging state', () => {
-        // Override mock to return isDragging = true
-        vi.mocked(vi.fn()).mockReturnValue({
+        mockUseDraggable.mockReturnValue({
             setNodeRef: vi.fn(),
             attributes: {},
             listeners: {},
-            transform: { x: 10, y: 20, scaleX: 1, scaleY: 1 },
+            transform: { x: 10, y: 20, scaleX: 1, scaleY: 1 } as any,
             isDragging: true,
         });
         const lesson = { id: 6, title: 'Dragging', subjectId: 1, plannedDate: '2026-03-01', isCompleted: false, checklist: [] } as any;
         render(<LessonCard lesson={lesson} />);
         expect(screen.getByText('Dragging')).toBeInTheDocument();
+        // Reset for other tests
+        mockUseDraggable.mockReturnValue({
+            setNodeRef: vi.fn(),
+            attributes: {},
+            listeners: {},
+            transform: null,
+            isDragging: false,
+        });
     });
 
     it('renders without checklist when empty', () => {
@@ -80,6 +91,6 @@ describe('LessonCard', () => {
     it('renders CheckCircle icon when completed', () => {
         const lesson = { id: 8, title: 'Completed', subjectId: 1, plannedDate: '2026-03-01', isCompleted: true, checklist: [] } as any;
         const { container } = render(<LessonCard lesson={lesson} />);
-        expect(container.querySelector('.lucide-check-circle')).toBeTruthy();
+        expect(container.querySelector('svg.text-green-500')).toBeTruthy();
     });
 });

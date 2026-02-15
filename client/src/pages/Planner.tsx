@@ -59,7 +59,7 @@ export default function Planner() {
             // Fix date timezone issue: construct date from local midnight string to ensure correct day
             const payload = {
                 ...newLesson,
-                plannedDate: new Date(newLesson.plannedDate + 'T00:00:00').toISOString()
+                plannedDate: newLesson.plannedDate // Keep as YYYY-MM-DD for consistency
             };
 
             if (editingLessonId) {
@@ -287,21 +287,21 @@ export default function Planner() {
                     {activeTab === 'lessons' ? (
                         <form onSubmit={handleSaveLesson} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                <label htmlFor="lessonTitle" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                <input required id="lessonTitle" type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newLesson.title} onChange={e => setNewLesson({ ...newLesson, title: e.target.value })} />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <select required className="w-full rounded-lg border-gray-300"
+                                <label htmlFor="lessonSubject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <select required id="lessonSubject" className="w-full rounded-lg border-gray-300"
                                     value={newLesson.subjectId} onChange={e => setNewLesson({ ...newLesson, subjectId: e.target.value })}>
                                     <option value="">Select a Subject</option>
                                     {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-                                <input required type="date" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                <label htmlFor="lessonDate" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                <input required id="lessonDate" type="date" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newLesson.plannedDate} onChange={e => setNewLesson({ ...newLesson, plannedDate: e.target.value })} />
                             </div>
                             {!editingLessonId && (
@@ -321,8 +321,8 @@ export default function Planner() {
                     ) : (
                         <form onSubmit={handleCreateSession} className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                                <select required className="w-full rounded-lg border-gray-300"
+                                <label htmlFor="sessionSubject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <select required id="sessionSubject" className="w-full rounded-lg border-gray-300"
                                     value={newSession.subjectId} onChange={e => setNewSession({ ...newSession, subjectId: e.target.value, lessonPlanId: undefined })}>
                                     <option value="">Select a Subject</option>
                                     {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -339,8 +339,8 @@ export default function Planner() {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <input required type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                <label htmlFor="sessionTopic" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <input required id="sessionTopic" type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newSession.topic} onChange={e => setNewSession({ ...newSession, topic: e.target.value })} />
                             </div>
                             <div className="grid grid-cols-2 gap-2">

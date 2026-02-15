@@ -39,7 +39,10 @@ export default function LessonCard({ lesson, subjectColor }: LessonCardProps) {
             />
 
             <div className="pl-2.5">
-                <h4 className={clsx("text-xs font-semibold leading-tight mb-1", lesson.isCompleted ? "text-gray-500 line-through" : "text-gray-900")}>
+                <h4
+                    data-testid="lesson-title"
+                    className={clsx("text-xs font-semibold leading-tight mb-1", lesson.isCompleted ? "text-gray-500 line-through" : "text-gray-900")}
+                >
                     {lesson.title}
                 </h4>
 

@@ -3,12 +3,12 @@ import { render, screen, waitFor } from '@testing-library/react';
 import Dashboard from '../../src/pages/Dashboard';
 
 const mockGet = vi.fn();
-vi.mock('../lib/api', () => ({
+vi.mock('../../src/lib/api', () => ({
     default: { get: (...args: any[]) => mockGet(...args) },
 }));
 
 // Mock NextClasses since it has its own tests
-vi.mock('../components/NextClasses', () => ({
+vi.mock('../../src/components/NextClasses', () => ({
     default: () => <div data-testid="next-classes">NextClasses</div>,
 }));
 
