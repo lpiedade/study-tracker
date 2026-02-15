@@ -44,6 +44,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}          
           report_type: test_results
-          files: |
-            ./server/reports/junit.xml
-            ./client/reports/junit.xml
+          files: ./server/reports/junit.xml,./client/reports/junit.xml
