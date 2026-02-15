@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, ClipboardList } from 'lucide-react';
+import { Plus, Trash2, ClipboardList, Edit2, X } from 'lucide-react';
 import api from '../lib/api';
 import type { ChecklistTemplate } from '../types';
 
@@ -9,6 +9,7 @@ export default function Templates() {
     const [newName, setNewName] = useState('');
     const [newDesc, setNewDesc] = useState('');
     const [newItems, setNewItems] = useState<string[]>(['']);
+    const [editingId, setEditingId] = useState<number | null>(null);
 
     const fetchTemplates = async () => {
         try {
@@ -35,22 +36,42 @@ export default function Templates() {
         setNewItems(newItems.filter((_, i) => i !== index));
     };
 
-    const handleCreateTemplate = async (e: React.FormEvent) => {
+    const handleSaveTemplate = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const filteredItems = newItems.filter(item => item.trim() !== '');
-            await api.post('/templates', {
+            const payload = {
                 name: newName,
                 description: newDesc,
                 items: filteredItems
-            });
-            setNewName('');
-            setNewDesc('');
-            setNewItems(['']);
+            };
+
+            if (editingId) {
+                await api.put(`/templates/${editingId}`, payload);
+            } else {
+                await api.post('/templates', payload);
+            }
+
+            resetForm();
             fetchTemplates();
         } catch (err) {
-            alert('Failed to create template');
+            alert(`Failed to ${editingId ? 'update' : 'create'} template`);
         }
+    };
+
+    const resetForm = () => {
+        setNewName('');
+        setNewDesc('');
+        setNewItems(['']);
+        setEditingId(null);
+    };
+
+    const startEditing = (template: ChecklistTemplate) => {
+        setEditingId(template.id);
+        setNewName(template.name);
+        setNewDesc(template.description || '');
+        setNewItems(template.items.map(i => i.text));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -60,6 +81,7 @@ export default function Templates() {
             await api.delete(`/templates/${id}`);
             fetchTemplates();
             setDeletingId(null);
+            if (editingId === id) resetForm();
         } catch (err) {
             alert('Failed to delete template');
         }
@@ -83,39 +105,45 @@ export default function Templates() {
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {templates.map(template => (
-                            <div key={template.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col">
+                            <div key={template.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col h-fit">
                                 <div className="flex justify-between items-start mb-2">
                                     <h4 className="font-bold text-gray-900">{template.name}</h4>
-                                    {deletingId === template.id ? (
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-xs text-red-600 font-medium">Sure?</span>
-                                            <button
-                                                onClick={() => handleDeleteTemplate(template.id)}
-                                                className="text-red-600 hover:text-red-700 font-bold text-xs"
-                                            >
-                                                Yes
-                                            </button>
-                                            <button
-                                                onClick={() => setDeletingId(null)}
-                                                className="text-gray-500 hover:text-gray-700 text-xs"
-                                            >
-                                                No
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button onClick={() => setDeletingId(template.id)} className="text-gray-400 hover:text-red-500">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    )}
+                                    <div className="flex items-center gap-2">
+                                        {deletingId === template.id ? (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-xs text-red-600 font-medium">Sure?</span>
+                                                <button
+                                                    onClick={() => handleDeleteTemplate(template.id)}
+                                                    className="text-red-600 hover:text-red-700 font-bold text-xs"
+                                                >
+                                                    Yes
+                                                </button>
+                                                <button
+                                                    onClick={() => setDeletingId(null)}
+                                                    className="text-gray-500 hover:text-gray-700 text-xs"
+                                                >
+                                                    No
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <button onClick={() => startEditing(template)} className="text-gray-400 hover:text-indigo-600">
+                                                    <Edit2 className="w-4 h-4" />
+                                                </button>
+                                                <button onClick={() => setDeletingId(template.id)} className="text-gray-400 hover:text-red-500">
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
                                 {template.description && <p className="text-sm text-gray-600 mb-4">{template.description}</p>}
                                 <div className="space-y-2 mt-auto">
                                     <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Items ({template.items.length})</p>
-                                    <ul className="text-sm text-gray-700 list-disc list-inside">
-                                        {template.items.slice(0, 3).map(item => (
-                                            <li key={item.id} className="truncate">{item.text}</li>
+                                    <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
+                                        {template.items.map(item => (
+                                            <li key={item.id} className="break-words">{item.text}</li>
                                         ))}
-                                        {template.items.length > 3 && <li className="text-xs text-gray-400 italic">+{template.items.length - 3} more</li>}
                                     </ul>
                                 </div>
                             </div>
@@ -123,10 +151,19 @@ export default function Templates() {
                     </div>
                 </div>
 
-                {/* Create Section */}
+                {/* Create/Edit Section */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit sticky top-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Create Template</h3>
-                    <form onSubmit={handleCreateTemplate} className="space-y-4">
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                            {editingId ? 'Edit Template' : 'Create Template'}
+                        </h3>
+                        {editingId && (
+                            <button onClick={resetForm} className="text-gray-400 hover:text-gray-600">
+                                <X className="w-5 h-5" />
+                            </button>
+                        )}
+                    </div>
+                    <form onSubmit={handleSaveTemplate} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                             <input
@@ -178,7 +215,7 @@ export default function Templates() {
                             type="submit"
                             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
                         >
-                            <ClipboardList className="w-4 h-4" /> Create Template
+                            <ClipboardList className="w-4 h-4" /> {editingId ? 'Update Template' : 'Create Template'}
                         </button>
                     </form>
                 </div>

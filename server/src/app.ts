@@ -201,6 +201,29 @@ app.delete('/api/templates/:id', async (req, res) => {
     }
 });
 
+app.put('/api/templates/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, items } = req.body;
+
+        const template = await prisma.checklistTemplate.update({
+            where: { id: Number(id) },
+            data: {
+                name,
+                description,
+                items: {
+                    deleteMany: {},
+                    create: items.map((text: string, index: number) => ({ text, order: index }))
+                }
+            },
+            include: { items: true }
+        });
+        res.json(template);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update template' });
+    }
+});
+
 // --- Lesson Plans ---
 app.get('/api/lessons/upcoming', async (req, res) => {
     try {

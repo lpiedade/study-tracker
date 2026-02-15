@@ -277,6 +277,22 @@ describe('Templates API', () => {
         const res = await request(app).delete('/api/templates/999999');
         expect(res.status).toBe(500);
     });
+
+    it('PUT /api/templates/:id updates name, description and replaces items', async () => {
+        const id = createdIds.templates[0];
+        const res = await request(app)
+            .put(`/api/templates/${id}`)
+            .send({
+                name: 'Updated Template',
+                description: 'Updated description',
+                items: ['New Step A', 'New Step B'],
+            });
+        expect(res.status).toBe(200);
+        expect(res.body.name).toBe('Updated Template');
+        expect(res.body.description).toBe('Updated description');
+        expect(res.body.items).toHaveLength(2);
+        expect(res.body.items[0].text).toBe('New Step A');
+    });
 });
 
 // =============================================================
