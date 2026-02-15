@@ -8,7 +8,13 @@ export default defineConfig({
             provider: 'v8',
             include: ['src/**/*.ts'],
             exclude: ['src/**/*.test.ts', 'src/migrate-subjects.ts', 'src/index.ts'],
-            reporter: ['text', 'text-summary'],
+            reporter: [
+                'text',
+                'text-summary',
+                'json',          // coverage-final.json
+                'json-summary',  // coverage-summary.json
+                'lcov'
+            ],
             thresholds: {
                 lines: 90,
                 functions: 90,

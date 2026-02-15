@@ -18,7 +18,13 @@ export default defineConfig({
         'src/main.tsx',
         'src/vite-env.d.ts',
       ],
-      reporter: ['text', 'text-summary'],
+      reporter: [
+        'text',
+        'text-summary',
+        'json',
+        'json-summary',
+        'lcov'
+      ],
       thresholds: {
         lines: 80,
         functions: 75,
