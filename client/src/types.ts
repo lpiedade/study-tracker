@@ -1,8 +1,17 @@
+export interface Course {
+    id: number;
+    name: string;
+    description?: string;
+    subjects?: Subject[];
+}
+
 export interface Subject {
     id: number;
     name: string;
     description?: string;
     color?: string;
+    courseId?: number;
+    Course?: Course;
     lessonPlans?: LessonPlan[];
     createdAt: string;
 }

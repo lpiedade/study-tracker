@@ -334,7 +334,7 @@ export default function Planner() {
                                     value={newSession.lessonPlanId || ''} onChange={e => setNewSession({ ...newSession, lessonPlanId: e.target.value ? Number(e.target.value) : undefined })}>
                                     <option value="">No specific lesson</option>
                                     {lessons
-                                        .filter(l => l.subjectId === Number(newSession.subjectId))
+                                        .filter(l => String(l.subjectId) === String(newSession.subjectId))
                                         .map(l => <option key={l.id} value={l.id}>{l.title}</option>)}
                                 </select>
                             </div>

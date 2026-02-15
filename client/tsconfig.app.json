@@ -3,11 +3,16 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": [
+      "vite/client"
+    ],
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -15,7 +20,6 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -24,5 +28,20 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "test/components/calendar/CalendarHeader.test.tsx",
+    "test/components/calendar/LessonCard.test.tsx",
+    "test/components/calendar/MonthView.test.tsx",
+    "test/components/calendar/WeekView.test.tsx",
+    "test/pages/Analytics.test.tsx",
+    "test/pages/Calendar.test.tsx",
+    "test/pages/Courses.test.tsx",
+    "test/pages/Dashboard.test.tsx",
+    "test/pages/Planner.test.tsx",
+    "test/pages/Results.test.tsx",
+    "test/pages/Subjects.test.tsx",
+    "test/pages/Templates.test.tsx",
+    "test/setup.ts"
+  ]
 }

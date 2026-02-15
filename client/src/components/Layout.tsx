@@ -5,6 +5,7 @@ import clsx from 'clsx';
 const navItems = [
     { path: '/', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/calendar', label: 'Calendar', icon: Calendar },
+    { path: '/courses', label: 'Courses', icon: GraduationCap },
     { path: '/subjects', label: 'Subjects', icon: BookOpen },
     { path: '/templates', label: 'Templates', icon: ClipboardList },
     { path: '/planner', label: 'Planner', icon: Calendar },
