@@ -2,7 +2,7 @@
 
 
 [![Tests](https://github.com/lpiedade/study-tracker/actions/workflows/test.yml/badge.svg)](https://github.com/lpiedade/study-tracker/actions/workflows/test.yml)
-
+[![codecov](https://codecov.io/gh/lpiedade/study-tracker/branch/main/graph/badge.svg)](https://app.codecov.io/github/lpiedade/study-tracker)
 ![Status](https://img.shields.io/badge/status-active-success)
 
 A local-first web application for study planning and tracking.
