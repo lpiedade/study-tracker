@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:  # allow manual execution
+  workflow_dispatch:  # allow manually executions
 
 jobs:
   test:
