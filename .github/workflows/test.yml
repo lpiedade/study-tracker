@@ -11,7 +11,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: "file:./server/dev.db"
+      DATABASE_URL: "file:./dev.db"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
