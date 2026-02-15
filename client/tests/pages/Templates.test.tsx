@@ -96,12 +96,9 @@ describe('Templates', () => {
         render(<Templates />);
         await waitFor(() => expect(screen.getByText('Original')).toBeInTheDocument());
 
-        // Click Edit button (it's the first button in the actions div in the current implementation)
-        const editBtn = screen.getByRole('button', { name: '' }); // Edit2 icon has no text, but it's the first in the loop
-        // Find it specifically
-        const cards = screen.getAllByText('Original')[0].closest('div');
-        const actionBtns = cards?.querySelectorAll('button');
-        fireEvent.click(actionBtns![0]); // Edit icon button
+        // Click Edit button
+        const editBtn = screen.getByRole('button', { name: 'Edit template' });
+        fireEvent.click(editBtn);
 
         // Verify form populates
         await waitFor(() => {
@@ -134,18 +131,17 @@ describe('Templates', () => {
         render(<Templates />);
         await waitFor(() => expect(screen.getByText('Original')).toBeInTheDocument());
 
-        const cards = screen.getAllByText('Original')[0].closest('div');
-        const actionBtns = cards?.querySelectorAll('button');
-        fireEvent.click(actionBtns![0]); // Edit
+        const editBtn = screen.getByRole('button', { name: 'Edit template' });
+        fireEvent.click(editBtn);
 
         await waitFor(() => expect(screen.getByText('Edit Template')).toBeInTheDocument());
 
         // Click X button to cancel
-        const cancelBtn = screen.getByText('Edit Template').closest('div')?.querySelector('button');
-        fireEvent.click(cancelBtn!);
+        const cancelBtn = screen.getByRole('button', { name: 'Cancel editing' });
+        fireEvent.click(cancelBtn);
 
         await waitFor(() => {
-            expect(screen.getByText('Create Template')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Create Template' })).toBeInTheDocument();
             expect(screen.queryByDisplayValue('Original')).not.toBeInTheDocument();
         });
     });
@@ -181,6 +177,12 @@ describe('Templates', () => {
         // Should now have 3 input fields (name + 2 items)
         const inputs = screen.getByPlaceholderText('e.g. Math Lesson Base').closest('form')!.querySelectorAll('input[type="text"]');
         expect(inputs.length).toBe(3);
+
+        // Click remove item
+        const removeBtns = screen.getAllByRole('button', { name: 'Remove checklist item' });
+        fireEvent.click(removeBtns[0]);
+        const inputsAfter = screen.getByPlaceholderText('e.g. Math Lesson Base').closest('form')!.querySelectorAll('input[type="text"]');
+        expect(inputsAfter.length).toBe(2);
     });
 
     it('triggers delete confirmation flow', async () => {
@@ -194,9 +196,8 @@ describe('Templates', () => {
         });
 
         // Click trash icon to start delete
-        const cards = screen.getAllByText('To Delete')[0].closest('div');
-        const actionBtns = cards?.querySelectorAll('button');
-        fireEvent.click(actionBtns![1]); // Delete icon button
+        const deleteBtn = screen.getByRole('button', { name: 'Delete template' });
+        fireEvent.click(deleteBtn);
 
         // Should show "Sure?" confirmation
         await waitFor(() => {
@@ -204,7 +205,7 @@ describe('Templates', () => {
         });
 
         // Confirm delete
-        fireEvent.click(screen.getByText('Yes'));
+        fireEvent.click(screen.getByRole('button', { name: 'Confirm delete' }));
         await waitFor(() => {
             expect(mockDelete).toHaveBeenCalledWith('/templates/1');
         });
@@ -219,15 +220,14 @@ describe('Templates', () => {
             expect(screen.getByText('Cancel Del')).toBeInTheDocument();
         });
 
-        const cards = screen.getAllByText('Cancel Del')[0].closest('div');
-        const actionBtns = cards?.querySelectorAll('button');
-        fireEvent.click(actionBtns![1]);
+        const deleteBtn = screen.getByRole('button', { name: 'Delete template' });
+        fireEvent.click(deleteBtn);
 
         await waitFor(() => {
             expect(screen.getByText('Sure?')).toBeInTheDocument();
         });
 
-        fireEvent.click(screen.getByText('No'));
+        fireEvent.click(screen.getByRole('button', { name: 'Cancel delete' }));
         expect(screen.queryByText('Sure?')).not.toBeInTheDocument();
     });
 
@@ -241,11 +241,10 @@ describe('Templates', () => {
             expect(screen.getByText('Err Del')).toBeInTheDocument();
         });
 
-        const cards = screen.getAllByText('Err Del')[0].closest('div');
-        const actionBtns = cards?.querySelectorAll('button');
-        fireEvent.click(actionBtns![1]);
+        const deleteBtn = screen.getByRole('button', { name: 'Delete template' });
+        fireEvent.click(deleteBtn);
         await waitFor(() => { expect(screen.getByText('Sure?')).toBeInTheDocument(); });
-        fireEvent.click(screen.getByText('Yes'));
+        fireEvent.click(screen.getByRole('button', { name: 'Confirm delete' }));
 
         await waitFor(() => {
             expect(window.alert).toHaveBeenCalledWith('Failed to delete template');

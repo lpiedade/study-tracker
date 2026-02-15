@@ -115,22 +115,32 @@ export default function Templates() {
                                                 <button
                                                     onClick={() => handleDeleteTemplate(template.id)}
                                                     className="text-red-600 hover:text-red-700 font-bold text-xs"
+                                                    aria-label="Confirm delete"
                                                 >
                                                     Yes
                                                 </button>
                                                 <button
                                                     onClick={() => setDeletingId(null)}
                                                     className="text-gray-500 hover:text-gray-700 text-xs"
+                                                    aria-label="Cancel delete"
                                                 >
                                                     No
                                                 </button>
                                             </div>
                                         ) : (
                                             <>
-                                                <button onClick={() => startEditing(template)} className="text-gray-400 hover:text-indigo-600">
+                                                <button
+                                                    onClick={() => startEditing(template)}
+                                                    className="text-gray-400 hover:text-indigo-600"
+                                                    aria-label="Edit template"
+                                                >
                                                     <Edit2 className="w-4 h-4" />
                                                 </button>
-                                                <button onClick={() => setDeletingId(template.id)} className="text-gray-400 hover:text-red-500">
+                                                <button
+                                                    onClick={() => setDeletingId(template.id)}
+                                                    className="text-gray-400 hover:text-red-500"
+                                                    aria-label="Delete template"
+                                                >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </>
@@ -158,7 +168,11 @@ export default function Templates() {
                             {editingId ? 'Edit Template' : 'Create Template'}
                         </h3>
                         {editingId && (
-                            <button onClick={resetForm} className="text-gray-400 hover:text-gray-600">
+                            <button
+                                onClick={resetForm}
+                                className="text-gray-400 hover:text-gray-600"
+                                aria-label="Cancel editing"
+                            >
                                 <X className="w-5 h-5" />
                             </button>
                         )}
@@ -198,6 +212,7 @@ export default function Templates() {
                                         type="button"
                                         onClick={() => handleRemoveInputItem(index)}
                                         className="text-gray-400 hover:text-red-500"
+                                        aria-label="Remove checklist item"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </button>

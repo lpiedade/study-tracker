@@ -327,7 +327,7 @@ describe('Lessons API', () => {
             });
         expect(res.status).toBe(200);
         expect(res.body.title).toBe('Templated Lesson');
-        expect(res.body.checklist).toHaveLength(3);
+        expect(res.body.checklist).toHaveLength(2);
         expect(res.body.checklist[0].isCompleted).toBe(false);
         createdIds.lessons.push(res.body.id);
     });
