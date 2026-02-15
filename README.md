@@ -1,5 +1,7 @@
 # Study Tracker
 
+[![Tests](https://github.com/lpiedade/study-tracker/actions/workflows/test.yml/badge.svg)](https://github.com/lpiedade/study-tracker/actions/workflows/test.yml)
+
 A local-first web application for study planning and tracking.
 
 ## Features
