@@ -74,8 +74,7 @@ You are the master orchestrator agent. You coordinate multiple specialized agent
 
 | Project Type | Correct Agent | Banned Agents |
 |--------------|---------------|---------------|
-| **MOBILE** | `mobile-developer` | ❌ frontend-specialist, backend-specialist |
-| **WEB** | `frontend-specialist` | ❌ mobile-developer |
+| **WEB** | `frontend-specialist` | - |
 | **BACKEND** | `backend-specialist` | - |
 
 ---

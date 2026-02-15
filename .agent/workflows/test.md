@@ -43,7 +43,7 @@ When asked to test a file or feature:
    - Integration tests (if needed)
 
 3. **Write tests**
-   - Use project's test framework (Jest, Vitest, etc.)
+   - Use project's test framework (Vitest)
    - Follow existing test patterns
    - Mock external dependencies
 

@@ -19,6 +19,7 @@ vi.mock('recharts', () => ({
     CartesianGrid: () => <div />,
     Tooltip: () => <div />,
     Legend: () => <div />,
+    Cell: () => <div />,
 }));
 
 describe('Analytics', () => {

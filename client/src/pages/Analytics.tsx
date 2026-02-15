@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-    BarChart, Bar
+    BarChart, Bar, Cell
 } from 'recharts';
 import api from '../lib/api';
 import type { ExamResult, StudySession } from '../types';
@@ -36,16 +36,24 @@ export default function Analytics() {
     // 1. Score History (sorted by date)
     const scoreData = [...exams]
         .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-        .map(exam => ({
-            date: format(new Date(exam.date), 'MMM d'),
-            score: (exam.score / exam.maxScore) * 100,
-            subject: exam.Subject?.name || 'Unknown'
-        }));
+        .map(exam => {
+            const scorePercent = exam.maxScore > 0 ? (exam.score / exam.maxScore) * 100 : 0;
+            return {
+                date: format(new Date(exam.date), 'MMM d'),
+                score: Math.round(scorePercent * 10) / 10,
+                subject: exam.Subject?.name || 'Unknown'
+            };
+        });
 
     // 2. Study Hours by Subject
     const subjectHours: Record<string, { hours: number, color: string }> = {};
     sessions.forEach(session => {
-        const hours = (new Date(session.endTime).getTime() - new Date(session.startTime).getTime()) / (1000 * 60 * 60);
+        const start = new Date(session.startTime).getTime();
+        const end = new Date(session.endTime).getTime();
+        
+        if (isNaN(start) || isNaN(end) || end <= start) return;
+
+        const hours = (end - start) / (1000 * 60 * 60);
         const subjectName = session.Subject?.name || 'Unknown';
         const color = session.Subject?.color || '#4f46e5';
 
@@ -96,7 +104,7 @@ export default function Analytics() {
                                 <Legend />
                                 <Bar dataKey="hours" name="Hours">
                                     {sessionData.map((entry, index) => (
-                                        <Bar key={`cell-${index}`} dataKey="hours" fill={entry.color} />
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
                                     ))}
                                 </Bar>
                             </BarChart>

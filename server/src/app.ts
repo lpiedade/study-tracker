@@ -432,7 +432,10 @@ app.get('/api/stats/summary', async (req, res) => {
         const totalSessions = await prisma.studySession.count();
         const allSessions = await prisma.studySession.findMany({ select: { startTime: true, endTime: true } });
         const totalHours = allSessions.reduce((acc: number, curr: { startTime: Date, endTime: Date }) => {
-            const duration = (new Date(curr.endTime).getTime() - new Date(curr.startTime).getTime()) / (1000 * 60 * 60);
+            const start = new Date(curr.startTime).getTime();
+            const end = new Date(curr.endTime).getTime();
+            if (isNaN(start) || isNaN(end) || end <= start) return acc;
+            const duration = (end - start) / (1000 * 60 * 60);
             return acc + duration;
         }, 0);
 
