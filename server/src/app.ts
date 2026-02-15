@@ -246,7 +246,7 @@ app.post('/api/lessons', async (req, res) => {
             });
             if (template) {
                 checklistData = {
-                    create: template.items.map(item => ({
+                    create: template.items.map((item: { text: string; order: number }) => ({
                         text: item.text,
                         order: item.order,
                         isCompleted: false
