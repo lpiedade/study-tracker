@@ -2,7 +2,7 @@
 description: Add or update features in existing application. Used for iterative development.
 ---
 
-# /enhance - Update Application
+# /feature - Update Application
 
 $ARGUMENTS
 
@@ -46,12 +46,12 @@ This command adds features or makes updates to existing application.
 ## Usage Examples
 
 ```
-/enhance add dark mode
-/enhance build admin panel
-/enhance integrate payment system
-/enhance add search feature
-/enhance edit profile page
-/enhance make responsive
+/feature add dark mode
+/feature build admin panel
+/feature integrate payment system
+/feature add search feature
+/feature edit profile page
+/feature make responsive
 ```
 
 ---
