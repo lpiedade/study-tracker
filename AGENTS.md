@@ -41,6 +41,8 @@ This repository is a Node.js workspace monorepo with:
 5. If Prisma schema changes:
    - include migration files under `server/prisma/migrations`
    - confirm server tests still pass
+6. Update CHANGELOG.md:
+   - add new changes
 
 ## Commands Reference
 

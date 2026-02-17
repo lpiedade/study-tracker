@@ -17,7 +17,7 @@ describe('App', () => {
     it('renders without crashing', () => {
         render(<App />);
         // Should render the Layout which contains navigation
-        expect(screen.getByText('StudyTracker')).toBeTruthy();
+        expect(screen.getAllByText('StudyTracker').length).toBeGreaterThan(0);
     });
 
     it('renders dashboard at root path', () => {

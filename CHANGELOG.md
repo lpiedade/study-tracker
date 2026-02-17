@@ -2,8 +2,6 @@
 
 All notable changes to this project are documented in this file.
 
-Format is intended to be GitHub-friendly (Markdown with linked commits and PRs).
-
 ## [2026-02-16]
 
 ### Documentation

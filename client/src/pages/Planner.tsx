@@ -151,18 +151,18 @@ export default function Planner() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold text-gray-900">Study Planner</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Study Planner</h2>
 
                 <div className="flex bg-gray-100 p-1 rounded-lg">
                     <button
                         onClick={() => setActiveTab('lessons')}
-                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'lessons' ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500 hover:text-gray-700")}
+                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'lessons' ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm" : "text-gray-500 hover:text-gray-700")}
                     >
                         Lesson Plans
                     </button>
                     <button
                         onClick={() => setActiveTab('sessions')}
-                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'sessions' ? "bg-white text-indigo-600 shadow-sm" : "text-gray-500 hover:text-gray-700")}
+                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'sessions' ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm" : "text-gray-500 hover:text-gray-700")}
                     >
                         Session History
                     </button>
@@ -173,17 +173,17 @@ export default function Planner() {
                 {/* List Section */}
                 <div className="lg:col-span-2 space-y-4">
                     {activeTab === 'lessons' ? (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                            <div className="divide-y divide-gray-200">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                            <div className="divide-y divide-gray-200 dark:divide-slate-800">
                                 {lessons.length === 0 && <p className="p-6 text-center text-gray-500">No lessons planned.</p>}
                                 {lessons.map(lesson => (
-                                    <div key={lesson.id} className="p-6 flex items-center justify-between hover:bg-gray-50">
+                                    <div key={lesson.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60">
                                         <div className="flex items-start gap-4">
                                             <button onClick={() => toggleLesson(lesson.id, lesson.isCompleted)} className={clsx("mt-1", lesson.isCompleted ? "text-green-500" : "text-gray-300 hover:text-gray-400")}>
                                                 <CheckCircle className="w-6 h-6" />
                                             </button>
                                             <div>
-                                                <h3 className={clsx("font-medium text-gray-900", lesson.isCompleted && "line-through text-gray-500")}>{lesson.title}</h3>
+                                                <h3 className={clsx("font-medium text-gray-900 dark:text-slate-100", lesson.isCompleted && "line-through text-gray-500")}>{lesson.title}</h3>
                                                 <p className="text-sm text-gray-500">
                                                     <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: lesson.Subject?.color }}></span>
                                                     {lesson.Subject?.name || 'Unknown'} • {parseLocalDate(lesson.plannedDate).toLocaleDateString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' })}
@@ -235,13 +235,13 @@ export default function Planner() {
                             </div>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                            <div className="divide-y divide-gray-200">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                            <div className="divide-y divide-gray-200 dark:divide-slate-800">
                                 {sessions.length === 0 && <p className="p-6 text-center text-gray-500">No sessions logged.</p>}
                                 {sessions.map(session => (
-                                    <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50">
+                                    <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60">
                                         <div>
-                                            <h3 className="font-medium text-gray-900">{session.Subject?.name || 'Unknown'}</h3>
+                                            <h3 className="font-medium text-gray-900 dark:text-slate-100">{session.Subject?.name || 'Unknown'}</h3>
                                             <p className="text-sm text-gray-500">{session.topic}</p>
                                             <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
                                                 <Clock className="w-3 h-3" />
@@ -270,9 +270,9 @@ export default function Planner() {
                 </div>
 
                 {/* Add Form Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit">
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 h-fit">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
                             {activeTab === 'lessons'
                                 ? (editingLessonId ? 'Edit Lesson' : 'Add New Lesson')
                                 : 'Log Session'}
@@ -373,8 +373,8 @@ export default function Planner() {
             {
                 deletingLessonId && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
-                            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete Lesson</h3>
+                        <div className="bg-white dark:bg-slate-900 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-2">Delete Lesson</h3>
                             <p className="text-gray-600 mb-6">Are you sure you want to delete this lesson? This action cannot be undone.</p>
                             <div className="flex justify-end gap-3">
                                 <button

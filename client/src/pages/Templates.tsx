@@ -92,22 +92,22 @@ export default function Templates() {
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold text-gray-900">Checklist Templates</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Checklist Templates</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* List Section */}
                 <div className="lg:col-span-2 space-y-4">
                     {templates.length === 0 && (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center text-gray-500">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-12 text-center text-gray-500">
                             No templates created yet.
                         </div>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {templates.map(template => (
-                            <div key={template.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col h-fit">
+                            <div key={template.id} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 flex flex-col h-fit">
                                 <div className="flex justify-between items-start mb-2">
-                                    <h4 className="font-bold text-gray-900">{template.name}</h4>
+                                    <h4 className="font-bold text-gray-900 dark:text-slate-100">{template.name}</h4>
                                     <div className="flex items-center gap-2">
                                         {deletingId === template.id ? (
                                             <div className="flex items-center gap-2">
@@ -162,9 +162,9 @@ export default function Templates() {
                 </div>
 
                 {/* Create/Edit Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit sticky top-6">
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 h-fit sticky top-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">
                             {editingId ? 'Edit Template' : 'Create Template'}
                         </h3>
                         {editingId && (

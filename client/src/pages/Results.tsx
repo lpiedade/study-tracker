@@ -54,13 +54,13 @@ export default function Results() {
 
     return (
         <div className="space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900">Exam Results</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Exam Results</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div className="md:col-span-2 space-y-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                        <table className="min-w-full divide-y divide-gray-200 dark:divide-slate-800">
+                            <thead className="bg-gray-50 dark:bg-slate-800">
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
@@ -69,7 +69,7 @@ export default function Results() {
                                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white dark:bg-slate-900 divide-y divide-gray-200 dark:divide-slate-800">
                                 {exams.length === 0 && (
                                     <tr><td colSpan={4} className="px-6 py-4 text-center text-gray-500">No exam results recorded.</td></tr>
                                 )}
@@ -77,9 +77,9 @@ export default function Results() {
                                     const percentage = (exam.score / exam.maxScore) * 100;
                                     return (
                                         <tr key={exam.id}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{exam.Subject?.name || 'Unknown'}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-slate-100">{exam.Subject?.name || 'Unknown'}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{format(new Date(exam.date), 'MMM d, yyyy')}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{exam.score} / {exam.maxScore}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-slate-100">{exam.score} / {exam.maxScore}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${percentage >= 70 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                                                     {percentage.toFixed(1)}%
@@ -98,8 +98,8 @@ export default function Results() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 h-fit">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                         <Trophy className="w-5 h-5 text-yellow-500" /> Add Result
                     </h3>
                     <form onSubmit={handleSubmit} className="space-y-4">

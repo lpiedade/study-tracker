@@ -54,24 +54,24 @@ export default function Courses() {
     return (
         <div className="space-y-8">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold text-gray-900">Courses</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Courses</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* List Section */}
                 <div className="lg:col-span-2 space-y-4">
                     {courses.length === 0 && (
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center text-gray-500">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-12 text-center text-gray-500">
                             No courses created yet. Start by grouping your subjects into a course.
                         </div>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {courses.map(course => (
-                            <div key={course.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-md transition-shadow">
+                            <div key={course.id} className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 flex flex-col hover:shadow-md transition-shadow">
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex items-center gap-2">
                                         <BookOpen className="w-5 h-5 text-indigo-600" />
-                                        <h4 className="font-bold text-gray-900">{course.name}</h4>
+                                        <h4 className="font-bold text-gray-900 dark:text-slate-100">{course.name}</h4>
                                     </div>
                                     <button onClick={() => handleDeleteCourse(course.id)} className="text-gray-400 hover:text-red-500">
                                         <Trash2 className="w-4 h-4" />
@@ -90,7 +90,7 @@ export default function Courses() {
                                             </span>
                                         ))}
                                         {(course.subjects?.length || 0) > 3 && (
-                                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-50 text-gray-500 italic">
+                                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-50 dark:bg-slate-800 text-gray-500 italic">
                                                 +{(course.subjects?.length || 0) - 3} more
                                             </span>
                                         )}
@@ -102,8 +102,8 @@ export default function Courses() {
                 </div>
 
                 {/* Create Section */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit sticky top-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Course</h3>
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 h-fit sticky top-6">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">Add Course</h3>
                     <form onSubmit={handleCreateCourse} className="space-y-4">
                         <div>
                             <label htmlFor="course-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>

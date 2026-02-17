@@ -100,7 +100,7 @@ export default function Calendar() {
                 subjects={subjects}
             />
 
-            <div className="flex-1 overflow-auto bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <div className="flex-1 overflow-auto bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-4">
                 <DndContext
                     sensors={sensors}
                     onDragStart={handleDragStart}
@@ -127,7 +127,7 @@ export default function Calendar() {
 
                     <DragOverlay>
                         {activeDragLesson ? (
-                            <div className="bg-white p-2 border border-indigo-200 rounded-lg shadow-xl opacity-90 ring-2 ring-indigo-500 rotate-2 w-[150px]">
+                            <div className="bg-white dark:bg-slate-900 p-2 border border-indigo-200 rounded-lg shadow-xl opacity-90 ring-2 ring-indigo-500 rotate-2 w-[150px]">
                                 <div className="h-1 w-1 bg-indigo-500 rounded-full mb-1"></div>
                                 <div className="text-xs font-semibold">{activeDragLesson.title}</div>
                             </div>

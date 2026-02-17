@@ -71,12 +71,12 @@ export default function Analytics() {
 
     return (
         <div className="space-y-8">
-            <h2 className="text-3xl font-bold text-gray-900">Analytics</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Analytics</h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Score Trend */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Score Trend (%)</h3>
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">Score Trend (%)</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={scoreData}>
@@ -92,8 +92,8 @@ export default function Analytics() {
                 </div>
 
                 {/* Study Distribution */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Study Hours by Subject</h3>
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">Study Hours by Subject</h3>
                     <div className="h-80">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={sessionData}>

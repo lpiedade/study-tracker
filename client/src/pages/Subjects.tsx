@@ -75,16 +75,16 @@ export default function Subjects() {
 
     return (
         <div className="space-y-8">
-            <h2 className="text-3xl font-bold text-gray-900">Manage Subjects</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Manage Subjects</h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* List Section */}
                 <div className="lg:col-span-2 space-y-4">
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div className="divide-y divide-gray-200">
+                    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                        <div className="divide-y divide-gray-200 dark:divide-slate-800">
                             {subjects.length === 0 && <p className="p-6 text-center text-gray-500">No subjects found.</p>}
                             {subjects.map(subject => (
-                                <div key={subject.id} className="p-6 flex items-center justify-between hover:bg-gray-50">
+                                <div key={subject.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60">
                                     {editingId === subject.id ? (
                                         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 mr-4">
                                             <input className="rounded border-gray-300 text-sm" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
@@ -104,7 +104,7 @@ export default function Subjects() {
                                             <div className="flex items-center gap-4 flex-1">
                                                 <div className="w-4 h-4 rounded-full flex-shrink-0" style={{ backgroundColor: subject.color }} />
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="font-medium text-gray-900 truncate">{subject.name}</h3>
+                                                    <h3 className="font-medium text-gray-900 dark:text-slate-100 truncate">{subject.name}</h3>
                                                     {subject.Course && (
                                                         <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 mb-1">
                                                             {subject.Course.name}
@@ -144,8 +144,8 @@ export default function Subjects() {
                 </div>
 
                 {/* Create Form */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 h-fit">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Subject</h3>
+                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 h-fit">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">Add New Subject</h3>
                     <form onSubmit={handleCreate} className="space-y-4">
                         <div>
                             <label htmlFor="subject-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>

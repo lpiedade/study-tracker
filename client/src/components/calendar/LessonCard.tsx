@@ -27,9 +27,9 @@ export default function LessonCard({ lesson, subjectColor }: LessonCardProps) {
             {...listeners}
             {...attributes}
             className={clsx(
-                "relative p-2 mb-2 bg-white border border-gray-200 rounded-lg shadow-sm cursor-move group hover:shadow-md transition-all z-10",
+                "relative p-2 mb-2 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg shadow-sm cursor-move group hover:shadow-md transition-all z-10",
                 isDragging && "opacity-50 ring-2 ring-indigo-500 rotate-2",
-                lesson.isCompleted && "bg-gray-50"
+                lesson.isCompleted && "bg-gray-50 dark:bg-slate-800"
             )}
         >
             {/* Left Color Stripe */}
@@ -41,7 +41,7 @@ export default function LessonCard({ lesson, subjectColor }: LessonCardProps) {
             <div className="pl-2.5">
                 <h4
                     data-testid="lesson-title"
-                    className={clsx("text-xs font-semibold leading-tight mb-1", lesson.isCompleted ? "text-gray-500 line-through" : "text-gray-900")}
+                    className={clsx("text-xs font-semibold leading-tight mb-1", lesson.isCompleted ? "text-gray-500 line-through" : "text-gray-900 dark:text-slate-100")}
                 >
                     {lesson.title}
                 </h4>

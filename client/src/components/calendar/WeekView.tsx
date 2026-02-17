@@ -56,17 +56,17 @@ function DayColumn({ day, lessons, subjects, totalHours, onDayClick }: DayColumn
     const isToday = isSameDay(day, new Date());
 
     return (
-        <div ref={setNodeRef} className={clsx("flex flex-col h-full rounded-xl transition-colors", isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200" : "bg-gray-50/30")}>
+        <div ref={setNodeRef} className={clsx("flex flex-col h-full rounded-xl transition-colors", isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200" : "bg-gray-50 dark:bg-slate-800/30")}>
             {/* Header */}
             <div
                 onClick={onDayClick}
                 className={clsx(
-                    "p-3 text-center border-b border-gray-100 cursor-pointer hover:bg-gray-50 rounded-t-xl transition-colors",
+                    "p-3 text-center border-b border-gray-100 cursor-pointer hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60 rounded-t-xl transition-colors",
                     isToday && "bg-indigo-50"
                 )}
             >
                 <div className="text-sm font-medium text-gray-500 uppercase">{format(day, 'EEE')}</div>
-                <div className={clsx("text-xl font-bold mt-0.5", isToday ? "text-indigo-600" : "text-gray-900")}>
+                <div className={clsx("text-xl font-bold mt-0.5", isToday ? "text-indigo-600" : "text-gray-900 dark:text-slate-100")}>
                     {format(day, 'd')}
                 </div>
                 {totalHours > 0 && (

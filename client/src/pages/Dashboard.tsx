@@ -37,7 +37,7 @@ export default function Dashboard() {
     return (
         <div className="space-y-8">
             <div>
-                <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Dashboard</h2>
                 <p className="text-gray-500 mt-1">Welcome back! Here's your study overview.</p>
             </div>
 
@@ -74,20 +74,20 @@ export default function Dashboard() {
             <NextClasses />
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b border-gray-200">
-                    <h3 className="text-lg font-semibold text-gray-900">Recent Sessions</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-slate-800">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100">Recent Sessions</h3>
                 </div>
-                <div className="divide-y divide-gray-200">
+                <div className="divide-y divide-gray-200 dark:divide-slate-800">
                     {recentSessions.length === 0 ? (
                         <div className="p-6 text-center text-gray-500">No recent study sessions found.</div>
                     ) : (
                         recentSessions.map((session) => (
-                            <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                            <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60 transition-colors">
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: session.Subject?.color }} />
-                                        <h4 className="font-medium text-gray-900">{session.Subject?.name || 'Unknown'}</h4>
+                                        <h4 className="font-medium text-gray-900 dark:text-slate-100">{session.Subject?.name || 'Unknown'}</h4>
                                     </div>
                                     <p className="text-sm text-gray-500">{session.topic}</p>
                                 </div>
@@ -116,10 +116,10 @@ export default function Dashboard() {
 
 function StatsCard({ title, value, icon: Icon, color, subtext }: { title: string, value: string, icon: any, color: string, subtext?: string }) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex items-start justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 flex items-start justify-between">
             <div>
                 <p className="text-sm font-medium text-gray-500">{title}</p>
-                <p className="mt-2 text-3xl font-semibold text-gray-900">{value}</p>
+                <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-slate-100">{value}</p>
                 {subtext && <p className="mt-1 text-xs font-medium text-gray-500">{subtext}</p>}
             </div>
             <div className={`p-3 rounded-lg ${color} text-white`}>
