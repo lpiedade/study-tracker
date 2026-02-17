@@ -34,7 +34,7 @@ export default function Results() {
         try {
             await api.delete(`/exams/${id}`);
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to delete result');
         }
     };
@@ -45,7 +45,7 @@ export default function Results() {
             await api.post('/exams', newExam);
             setNewExam({ subjectId: '', score: 0, maxScore: 100, date: format(new Date(), 'yyyy-MM-dd'), notes: '' });
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to add result');
         }
     };

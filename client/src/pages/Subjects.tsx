@@ -36,7 +36,7 @@ export default function Subjects() {
             await api.post('/subjects', newForm);
             setNewForm({ name: '', description: '', color: '#4f46e5', courseId: '' });
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to create subject');
         }
     };
@@ -46,7 +46,7 @@ export default function Subjects() {
             await api.put(`/subjects/${id}`, editForm);
             setEditingId(null);
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to update subject');
         }
     };
@@ -56,7 +56,7 @@ export default function Subjects() {
         try {
             await api.delete(`/subjects/${id}`);
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to delete subject');
         }
     };

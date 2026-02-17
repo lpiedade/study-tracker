@@ -353,7 +353,7 @@ app.put('/api/lessons/checklist-items/:id/toggle', async (req, res) => {
         const allItems = await prisma.lessonChecklistItem.findMany({
             where: { lessonId: item.lessonId }
         });
-        const allDone = allItems.every((i: any) => i.isCompleted);
+        const allDone = allItems.every((i) => i.isCompleted);
 
         await prisma.lessonPlan.update({
             where: { id: item.lessonId },

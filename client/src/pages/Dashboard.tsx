@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Clock, BookOpen, Trophy, AlertCircle } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import NextClasses from '../components/NextClasses';
 import api from '../lib/api';
 import type { StatsSummary, StudySession } from '../types';
@@ -128,7 +129,7 @@ export default function Dashboard() {
     );
 }
 
-function StatsCard({ title, value, icon: Icon, color, subtext }: { title: string, value: string, icon: any, color: string, subtext?: string }) {
+function StatsCard({ title, value, icon: Icon, color, subtext }: { title: string, value: string, icon: LucideIcon, color: string, subtext?: string }) {
     return (
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 flex items-start justify-between">
             <div>

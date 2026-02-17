@@ -34,7 +34,7 @@ export default function Courses() {
             setNewName('');
             setNewDesc('');
             fetchCourses();
-        } catch (err) {
+        } catch {
             alert('Failed to create course');
         }
     };
@@ -44,7 +44,7 @@ export default function Courses() {
         try {
             await api.delete(`/courses/${id}`);
             fetchCourses();
-        } catch (err) {
+        } catch {
             alert('Failed to delete course');
         }
     };

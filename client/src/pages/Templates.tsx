@@ -54,7 +54,7 @@ export default function Templates() {
 
             resetForm();
             fetchTemplates();
-        } catch (err) {
+        } catch {
             alert(`Failed to ${editingId ? 'update' : 'create'} template`);
         }
     };
@@ -82,7 +82,7 @@ export default function Templates() {
             fetchTemplates();
             setDeletingId(null);
             if (editingId === id) resetForm();
-        } catch (err) {
+        } catch {
             alert('Failed to delete template');
         }
     };

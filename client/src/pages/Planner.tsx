@@ -77,7 +77,7 @@ export default function Planner() {
                 title: ''
             }));
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to save lesson');
         }
     };
@@ -94,7 +94,7 @@ export default function Planner() {
                 cancelEditing();
             }
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to delete lesson');
         } finally {
             setDeletingLessonId(null);
@@ -127,11 +127,19 @@ export default function Planner() {
     const handleCreateSession = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const { courseId: _courseId, ...sessionPayload } = newSession;
+            const sessionPayload = {
+                subjectId: newSession.subjectId,
+                topic: newSession.topic,
+                startTime: newSession.startTime,
+                endTime: newSession.endTime,
+                isReview: newSession.isReview,
+                notes: newSession.notes,
+                lessonPlanId: newSession.lessonPlanId
+            };
             await api.post('/sessions', sessionPayload);
             setNewSession({ courseId: '', subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined });
             fetchData();
-        } catch (err) {
+        } catch {
             alert('Failed to log session');
         }
     };

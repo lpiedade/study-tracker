@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { addDays, subDays, addMonths, subMonths } from "date-fns";
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import api from "../lib/api";
 import type { LessonPlan, Subject } from "../types";
 import CalendarHeader from "../components/calendar/CalendarHeader";
@@ -20,21 +20,20 @@ export default function Calendar() {
     }));
 
     useEffect(() => {
-        fetchData();
+        const fetchData = async () => {
+            try {
+                const [lessonsRes, subjectsRes] = await Promise.all([
+                    api.get('/lessons'),
+                    api.get('/subjects')
+                ]);
+                setLessons(lessonsRes.data);
+                setSubjects(subjectsRes.data);
+            } catch (error) {
+                console.error("Failed to fetch calendar data", error);
+            }
+        };
+        void fetchData();
     }, []);
-
-    const fetchData = async () => {
-        try {
-            const [lessonsRes, subjectsRes] = await Promise.all([
-                api.get('/lessons'),
-                api.get('/subjects')
-            ]);
-            setLessons(lessonsRes.data);
-            setSubjects(subjectsRes.data);
-        } catch (error) {
-            console.error("Failed to fetch calendar data", error);
-        }
-    };
 
     const handleNavigate = (direction: 'prev' | 'next' | 'today') => {
         if (direction === 'today') {
@@ -49,7 +48,7 @@ export default function Calendar() {
         }
     };
 
-    const handleDragStart = (event: any) => {
+    const handleDragStart = (event: DragStartEvent) => {
         setActiveDragLesson(event.active.data.current.lesson);
     };
 

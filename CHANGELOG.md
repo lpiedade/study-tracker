@@ -15,6 +15,7 @@ All notable changes to this project are documented in this file.
 - Align backend package entry point with built output (`server/package.json` `main` -> `dist/index.js`)
 - Remove unused backend dependency `qs`
 - Move `@tailwindcss/postcss` from runtime dependencies to frontend `devDependencies`
+- Fix and align workspace linting: server ESLint Node/CommonJS config, client test/coverage lint scope, and page-level TypeScript lint errors
 
 ## [2026-02-16]
 
