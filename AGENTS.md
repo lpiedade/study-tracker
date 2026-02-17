@@ -33,11 +33,35 @@ This repository is a Node.js workspace monorepo with:
    - backend only: `npm run dev --workspace=server`
    - frontend only: `npm run dev --workspace=client`
 4. Validate changes before PR:
-   - all tests: `npm run test`
+   - all workspace tests: `npm run test`
+   - backend tests only: `npm run test --workspace=server`
+   - frontend tests only: `npm run test --workspace=client`
    - frontend lint: `npm run lint --workspace=client`
+   - production builds: `npm run build --workspace=server` and `npm run build --workspace=client`
 5. If Prisma schema changes:
    - include migration files under `server/prisma/migrations`
    - confirm server tests still pass
+
+## Commands Reference
+
+Run all commands from repo root unless noted.
+
+- Root workspace commands:
+  - `npm run dev`: run backend and frontend dev servers concurrently
+  - `npm run test`: run tests in all workspaces
+- Backend (`server`) commands:
+  - `npm run dev --workspace=server`: start API in watch mode via nodemon
+  - `npm run build --workspace=server`: compile TypeScript to `server/dist`
+  - `npm run start --workspace=server`: run compiled server from `server/dist/index.js`
+  - `npm run test --workspace=server`: run backend Vitest suite with coverage
+  - `npm exec -w server -- prisma migrate dev`: create/apply local migration during schema work
+  - `npm exec -w server -- prisma generate --schema=prisma/schema.prisma`: regenerate Prisma client
+- Frontend (`client`) commands:
+  - `npm run dev --workspace=client`: start Vite dev server
+  - `npm run build --workspace=client`: type-check and build production assets
+  - `npm run preview --workspace=client`: preview built frontend bundle
+  - `npm run lint --workspace=client`: run ESLint
+  - `npm run test --workspace=client`: run frontend Vitest suite with coverage
 
 ## Coding Conventions (Repo-Specific)
 
