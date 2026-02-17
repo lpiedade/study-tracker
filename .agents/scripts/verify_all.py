@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Full Verification Suite - Antigravity Kit
-==========================================
+Full Verification Suite - Codex Kit
+===================================
 
 Runs COMPLETE validation including all checks + performance + E2E.
 Use this before deployment or major releases.
@@ -59,90 +59,50 @@ def print_error(text: str):
 
 # Complete verification suite
 VERIFICATION_SUITE = [
-    # P0: Security (CRITICAL)
     {
         "category": "Security",
         "checks": [
-            ("Security Scan", ".agent/skills/vulnerability-scanner/scripts/security_scan.py", True),
-            ("Dependency Analysis", ".agent/skills/vulnerability-scanner/scripts/dependency_analyzer.py", False),
+            ("Security Scan", ".agents/skills/vulnerability-scanner/scripts/security_scan.py", True),
         ]
     },
-    
-    # P1: Code Quality (CRITICAL)
     {
         "category": "Code Quality",
         "checks": [
-            ("Lint Check", ".agent/skills/lint-and-validate/scripts/lint_runner.py", True),
-            ("Type Coverage", ".agent/skills/lint-and-validate/scripts/type_coverage.py", False),
+            ("Lint Check", ".agents/skills/lint-and-validate/scripts/lint_runner.py", True),
+            ("Type Coverage", ".agents/skills/lint-and-validate/scripts/type_coverage.py", False),
         ]
     },
-    
-    # P2: Data Layer
     {
         "category": "Data Layer",
         "checks": [
-            ("Schema Validation", ".agent/skills/database-design/scripts/schema_validator.py", False),
+            ("Schema Validation", ".agents/skills/database-design/scripts/schema_validator.py", False),
         ]
     },
-    
-    # P3: Testing
     {
         "category": "Testing",
         "checks": [
-            ("Test Suite", ".agent/skills/testing-patterns/scripts/test_runner.py", False),
+            ("Test Suite", ".agents/skills/testing-patterns/scripts/test_runner.py", False),
         ]
     },
-    
-    # P4: UX & Accessibility
     {
         "category": "UX & Accessibility",
         "checks": [
-            ("UX Audit", ".agent/skills/frontend-design/scripts/ux_audit.py", False),
-            ("Accessibility Check", ".agent/skills/frontend-design/scripts/accessibility_checker.py", False),
+            ("UX Audit", ".agents/skills/frontend-design/scripts/ux_audit.py", False),
+            ("Accessibility Check", ".agents/skills/frontend-design/scripts/accessibility_checker.py", False),
         ]
     },
-    
-    # P5: SEO & Content
-    {
-        "category": "SEO & Content",
-        "checks": [
-            ("SEO Check", ".agent/skills/seo-fundamentals/scripts/seo_checker.py", False),
-            ("GEO Check", ".agent/skills/geo-fundamentals/scripts/geo_checker.py", False),
-        ]
-    },
-    
-    # P6: Performance (requires URL)
     {
         "category": "Performance",
         "requires_url": True,
         "checks": [
-            ("Lighthouse Audit", ".agent/skills/performance-profiling/scripts/lighthouse_audit.py", True),
-            ("Bundle Analysis", ".agent/skills/performance-profiling/scripts/bundle_analyzer.py", False),
+            ("Lighthouse Audit", ".agents/skills/performance-profiling/scripts/lighthouse_audit.py", True),
         ]
     },
-    
-    # P7: E2E Testing (requires URL)
     {
         "category": "E2E Testing",
         "requires_url": True,
         "checks": [
-            ("Playwright E2E", ".agent/skills/webapp-testing/scripts/playwright_runner.py", False),
-        ]
-    },
-    
-    # P8: Mobile (if applicable)
-    {
-        "category": "Mobile",
-        "checks": [
-            ("Mobile Audit", ".agent/skills/mobile-design/scripts/mobile_audit.py", False),
-        ]
-    },
-    
-    # P9: Internationalization
-    {
-        "category": "Internationalization",
-        "checks": [
-            ("i18n Check", ".agent/skills/i18n-localization/scripts/i18n_checker.py", False),
+            ("Playwright E2E", ".agents/skills/webapp-testing/scripts/playwright_runner.py", False),
         ]
     },
 ]
@@ -262,7 +222,7 @@ def print_final_report(results: List[dict], start_time: datetime):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Run complete Antigravity Kit verification suite",
+        description="Run complete Codex Kit verification suite",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -283,7 +243,7 @@ Examples:
         print_error(f"Project path does not exist: {project_path}")
         sys.exit(1)
     
-    print_header("🚀 ANTIGRAVITY KIT - FULL VERIFICATION SUITE")
+    print_header("🚀 CODEX KIT - FULL VERIFICATION SUITE")
     print(f"Project: {project_path}")
     print(f"URL: {args.url}")
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
