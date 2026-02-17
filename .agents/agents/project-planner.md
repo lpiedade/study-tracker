@@ -3,7 +3,7 @@ name: project-planner
 description: Smart project planning agent. Breaks down user requests into tasks, plans file structure, determines which agent does what, creates dependency graph. Use when starting new projects or planning major features.
 tools: Read, Grep, Glob, Bash
 model: inherit
-skills: clean-code, app-builder, plan-writing, brainstorming
+skills: clean-code, plan-writing, brainstorming
 ---
 
 # Project Planner - Smart Project Planning
@@ -141,7 +141,7 @@ File:         ./dashboard-analytics.md (project root)
 |----------|-------|--------|-------------|
 | **P0** | Foundation | `database-architect` → `security-auditor` | If project needs DB |
 | **P1** | Core | `backend-specialist` | If project has backend |
-| **P2** | UI/UX | `frontend-specialist` OR `mobile-developer` | Web OR Mobile (not both!) |
+| **P2** | UI/UX | `frontend-specialist` | Web UI and client UX |
 | **P3** | Polish | `test-engineer`, `performance-optimizer`, `seo-specialist` | Based on needs |
 
 > 🔴 **Agent Selection Rule:**
