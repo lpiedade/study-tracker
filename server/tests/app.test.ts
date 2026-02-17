@@ -208,6 +208,33 @@ describe('Sessions API', () => {
         createdIds.sessions.push(res.body.id);
     });
 
+    it('POST /api/sessions with lessonPlanId links to lesson plan', async () => {
+        const lesson = await request(app)
+            .post('/api/lessons')
+            .send({
+                title: 'Session Linked Lesson',
+                subjectId: createdIds.subjects[0],
+                content: 'Content',
+                plannedDate: '2026-01-22',
+            });
+        expect(lesson.status).toBe(200);
+        createdIds.lessons.push(lesson.body.id);
+
+        const res = await request(app)
+            .post('/api/sessions')
+            .send({
+                subjectId: createdIds.subjects[0],
+                lessonPlanId: lesson.body.id,
+                topic: 'Lesson-linked session',
+                startTime: '2026-01-22T10:00:00Z',
+                endTime: '2026-01-22T11:00:00Z',
+                isReview: false,
+            });
+        expect(res.status).toBe(200);
+        expect(res.body.lessonPlanId).toBe(lesson.body.id);
+        createdIds.sessions.push(res.body.id);
+    });
+
     it('GET /api/sessions returns array with relations', async () => {
         const res = await request(app).get('/api/sessions');
         expect(res.status).toBe(200);
@@ -608,4 +635,3 @@ describe('Error paths', () => {
         expect(res.status).toBe(500);
     });
 });
-

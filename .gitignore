@@ -14,3 +14,6 @@ dist-ssr
 *.local
 
 .vitest_tmp
+tmp
+output
+
