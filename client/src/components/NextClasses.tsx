@@ -23,7 +23,7 @@ export default function NextClasses() {
         fetchUpcoming();
     }, []);
 
-    if (loading) return <div className="p-4 text-center text-gray-500">Loading upcoming classes...</div>;
+    if (loading) return <div className="p-4 text-center text-gray-500 dark:text-slate-400">Loading upcoming classes...</div>;
 
     return (
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden mb-8">
@@ -32,24 +32,24 @@ export default function NextClasses() {
             </div>
             <div className="divide-y divide-gray-200 dark:divide-slate-800">
                 {upcomingLessons.length === 0 ? (
-                    <div className="p-6 text-center text-gray-500">No upcoming classes scheduled.</div>
+                    <div className="p-6 text-center text-gray-500 dark:text-slate-400">No upcoming classes scheduled.</div>
                 ) : (
                     upcomingLessons.map((lesson) => (
-                        <div key={lesson.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60 transition-colors">
+                        <div key={lesson.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors">
                             <div className="flex items-center gap-4">
                                 <div className={`p-2 rounded-lg bg-indigo-50 text-indigo-600`}>
                                     <Calendar className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-medium text-gray-900 dark:text-slate-100">{lesson.Subject?.name || 'Unknown'}</h4>
-                                    <p className="text-sm text-gray-500">{lesson.title}</p>
+                                    <p className="text-sm text-gray-500 dark:text-slate-400">{lesson.title}</p>
                                 </div>
                             </div>
                             <div className="text-right">
                                 <p className="text-sm font-medium text-gray-900 dark:text-slate-100">
                                     {format(parseLocalDate(lesson.plannedDate), 'MMM d, yyyy')}
                                 </p>
-                                <p className="text-xs text-gray-500 mt-1">
+                                <p className="text-xs text-gray-500 dark:text-slate-400 mt-1">
                                     {/* Placeholder for time if available, or just date */}
                                     Scheduled
                                 </p>

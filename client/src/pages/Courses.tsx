@@ -61,7 +61,7 @@ export default function Courses() {
                 {/* List Section */}
                 <div className="lg:col-span-2 space-y-4">
                     {courses.length === 0 && (
-                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-12 text-center text-gray-500">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-12 text-center text-gray-500 dark:text-slate-400">
                             No courses created yet. Start by grouping your subjects into a course.
                         </div>
                     )}
@@ -73,24 +73,24 @@ export default function Courses() {
                                         <BookOpen className="w-5 h-5 text-indigo-600" />
                                         <h4 className="font-bold text-gray-900 dark:text-slate-100">{course.name}</h4>
                                     </div>
-                                    <button onClick={() => handleDeleteCourse(course.id)} className="text-gray-400 hover:text-red-500">
+                                    <button onClick={() => handleDeleteCourse(course.id)} className="text-gray-400 dark:text-slate-500 hover:text-red-500">
                                         <Trash2 className="w-4 h-4" />
                                     </button>
                                 </div>
-                                {course.description && <p className="text-sm text-gray-600 mb-4">{course.description}</p>}
+                                {course.description && <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">{course.description}</p>}
                                 <div className="mt-auto pt-4 border-t border-gray-100">
-                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                                    <p className="text-xs font-semibold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">
                                         Subjects ({course.subjects?.length || 0})
                                     </p>
                                     <div className="flex flex-wrap gap-2">
                                         {course.subjects?.slice(0, 3).map(subject => (
-                                            <span key={subject.id} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                                            <span key={subject.id} className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
                                                 <span className="w-1.5 h-1.5 rounded-full mr-1.5" style={{ backgroundColor: subject.color }}></span>
                                                 {subject.name}
                                             </span>
                                         ))}
                                         {(course.subjects?.length || 0) > 3 && (
-                                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-50 dark:bg-slate-800 text-gray-500 italic">
+                                            <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-slate-400 italic">
                                                 +{(course.subjects?.length || 0) - 3} more
                                             </span>
                                         )}
@@ -106,7 +106,7 @@ export default function Courses() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">Add Course</h3>
                     <form onSubmit={handleCreateCourse} className="space-y-4">
                         <div>
-                            <label htmlFor="course-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <label htmlFor="course-name" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Name</label>
                             <input
                                 id="course-name"
                                 required
@@ -118,7 +118,7 @@ export default function Courses() {
                             />
                         </div>
                         <div>
-                            <label htmlFor="course-desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <label htmlFor="course-desc" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Description</label>
                             <textarea
                                 id="course-desc"
                                 className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"

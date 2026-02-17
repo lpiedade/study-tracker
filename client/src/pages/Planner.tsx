@@ -153,16 +153,16 @@ export default function Planner() {
             <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Study Planner</h2>
 
-                <div className="flex bg-gray-100 p-1 rounded-lg">
+                <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-lg">
                     <button
                         onClick={() => setActiveTab('lessons')}
-                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'lessons' ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm" : "text-gray-500 hover:text-gray-700")}
+                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'lessons' ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm" : "text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200")}
                     >
                         Lesson Plans
                     </button>
                     <button
                         onClick={() => setActiveTab('sessions')}
-                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'sessions' ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm" : "text-gray-500 hover:text-gray-700")}
+                        className={clsx("px-4 py-2 rounded-md text-sm font-medium transition-colors", activeTab === 'sessions' ? "bg-white dark:bg-slate-900 text-indigo-600 shadow-sm" : "text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200")}
                     >
                         Session History
                     </button>
@@ -175,27 +175,27 @@ export default function Planner() {
                     {activeTab === 'lessons' ? (
                         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
                             <div className="divide-y divide-gray-200 dark:divide-slate-800">
-                                {lessons.length === 0 && <p className="p-6 text-center text-gray-500">No lessons planned.</p>}
+                                {lessons.length === 0 && <p className="p-6 text-center text-gray-500 dark:text-slate-400">No lessons planned.</p>}
                                 {lessons.map(lesson => (
-                                    <div key={lesson.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60">
+                                    <div key={lesson.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/60">
                                         <div className="flex items-start gap-4">
-                                            <button onClick={() => toggleLesson(lesson.id, lesson.isCompleted)} className={clsx("mt-1", lesson.isCompleted ? "text-green-500" : "text-gray-300 hover:text-gray-400")}>
+                                            <button onClick={() => toggleLesson(lesson.id, lesson.isCompleted)} className={clsx("mt-1", lesson.isCompleted ? "text-green-500" : "text-gray-300 hover:text-gray-400 dark:text-slate-500")}>
                                                 <CheckCircle className="w-6 h-6" />
                                             </button>
                                             <div>
-                                                <h3 className={clsx("font-medium text-gray-900 dark:text-slate-100", lesson.isCompleted && "line-through text-gray-500")}>{lesson.title}</h3>
-                                                <p className="text-sm text-gray-500">
+                                                <h3 className={clsx("font-medium text-gray-900 dark:text-slate-100", lesson.isCompleted && "line-through text-gray-500 dark:text-slate-400")}>{lesson.title}</h3>
+                                                <p className="text-sm text-gray-500 dark:text-slate-400">
                                                     <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: lesson.Subject?.color }}></span>
                                                     {lesson.Subject?.name || 'Unknown'} • {parseLocalDate(lesson.plannedDate).toLocaleDateString(undefined, { timeZone: 'UTC', month: 'short', day: 'numeric', year: 'numeric' })}
                                                 </p>
 
                                                 {lesson.checklist && lesson.checklist.length > 0 && (
                                                     <div className="mt-4 space-y-2">
-                                                        <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+                                                        <div className="flex items-center justify-between text-xs text-gray-400 dark:text-slate-500 mb-1">
                                                             <span>Checklist ({lesson.checklist.filter(i => i.isCompleted).length}/{lesson.checklist.length})</span>
                                                             <span>{Math.round((lesson.checklist.filter(i => i.isCompleted).length / lesson.checklist.length) * 100)}%</span>
                                                         </div>
-                                                        <div className="w-full bg-gray-100 rounded-full h-1.5 mb-3">
+                                                        <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-1.5 mb-3">
                                                             <div
                                                                 className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300"
                                                                 style={{ width: `${(lesson.checklist.filter(i => i.isCompleted).length / lesson.checklist.length) * 100}%` }}
@@ -214,7 +214,7 @@ export default function Planner() {
                                                                     )}>
                                                                         {item.isCompleted && <CheckCircle className="w-3 h-3 text-white" />}
                                                                     </div>
-                                                                    <span className={clsx(item.isCompleted && "line-through text-gray-400")}>{item.text}</span>
+                                                                    <span className={clsx(item.isCompleted && "line-through text-gray-400 dark:text-slate-500")}>{item.text}</span>
                                                                 </button>
                                                             ))}
                                                         </div>
@@ -223,10 +223,10 @@ export default function Planner() {
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <button onClick={() => startEditingLesson(lesson)} className="text-gray-400 hover:text-indigo-600 transition-colors">
+                                            <button onClick={() => startEditingLesson(lesson)} className="text-gray-400 dark:text-slate-500 hover:text-indigo-600 transition-colors">
                                                 <Edit2 className="w-5 h-5" />
                                             </button>
-                                            <button onClick={() => handleDeleteClick(lesson.id)} className="text-gray-400 hover:text-red-500 transition-colors">
+                                            <button onClick={() => handleDeleteClick(lesson.id)} className="text-gray-400 dark:text-slate-500 hover:text-red-500 transition-colors">
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
                                         </div>
@@ -237,13 +237,13 @@ export default function Planner() {
                     ) : (
                         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
                             <div className="divide-y divide-gray-200 dark:divide-slate-800">
-                                {sessions.length === 0 && <p className="p-6 text-center text-gray-500">No sessions logged.</p>}
+                                {sessions.length === 0 && <p className="p-6 text-center text-gray-500 dark:text-slate-400">No sessions logged.</p>}
                                 {sessions.map(session => (
-                                    <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60">
+                                    <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/60">
                                         <div>
                                             <h3 className="font-medium text-gray-900 dark:text-slate-100">{session.Subject?.name || 'Unknown'}</h3>
-                                            <p className="text-sm text-gray-500">{session.topic}</p>
-                                            <div className="mt-1 flex items-center gap-2 text-xs text-gray-400">
+                                            <p className="text-sm text-gray-500 dark:text-slate-400">{session.topic}</p>
+                                            <div className="mt-1 flex items-center gap-2 text-xs text-gray-400 dark:text-slate-500">
                                                 <Clock className="w-3 h-3" />
                                                 {format(new Date(session.startTime), 'MMM d, h:mm a')} - {format(new Date(session.endTime), 'h:mm a')}
                                             </div>
@@ -258,7 +258,7 @@ export default function Planner() {
                                             <span className={clsx("px-2 py-1 rounded text-xs font-medium", session.isReview ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700")}>
                                                 {session.isReview ? 'Review' : 'Study'}
                                             </span>
-                                            <button onClick={() => deleteSession(session.id)} className="text-gray-400 hover:text-red-500">
+                                            <button onClick={() => deleteSession(session.id)} className="text-gray-400 dark:text-slate-500 hover:text-red-500">
                                                 <Trash2 className="w-5 h-5" />
                                             </button>
                                         </div>
@@ -278,7 +278,7 @@ export default function Planner() {
                                 : 'Log Session'}
                         </h3>
                         {editingLessonId && (
-                            <button onClick={cancelEditing} className="text-gray-400 hover:text-gray-600">
+                            <button onClick={cancelEditing} className="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:text-slate-400">
                                 <X className="w-5 h-5" />
                             </button>
                         )}
@@ -287,12 +287,12 @@ export default function Planner() {
                     {activeTab === 'lessons' ? (
                         <form onSubmit={handleSaveLesson} className="space-y-4">
                             <div>
-                                <label htmlFor="lessonTitle" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                                <label htmlFor="lessonTitle" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Title</label>
                                 <input required id="lessonTitle" type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newLesson.title} onChange={e => setNewLesson({ ...newLesson, title: e.target.value })} />
                             </div>
                             <div>
-                                <label htmlFor="lessonSubject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <label htmlFor="lessonSubject" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Subject</label>
                                 <select required id="lessonSubject" className="w-full rounded-lg border-gray-300"
                                     value={newLesson.subjectId} onChange={e => setNewLesson({ ...newLesson, subjectId: e.target.value })}>
                                     <option value="">Select a Subject</option>
@@ -300,13 +300,13 @@ export default function Planner() {
                                 </select>
                             </div>
                             <div>
-                                <label htmlFor="lessonDate" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                <label htmlFor="lessonDate" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Date</label>
                                 <input required id="lessonDate" type="date" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newLesson.plannedDate} onChange={e => setNewLesson({ ...newLesson, plannedDate: e.target.value })} />
                             </div>
                             {!editingLessonId && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Checklist Template (Optional)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Checklist Template (Optional)</label>
                                     <select className="w-full rounded-lg border-gray-300"
                                         value={newLesson.templateId} onChange={e => setNewLesson({ ...newLesson, templateId: e.target.value })}>
                                         <option value="">No Template</option>
@@ -321,7 +321,7 @@ export default function Planner() {
                     ) : (
                         <form onSubmit={handleCreateSession} className="space-y-4">
                             <div>
-                                <label htmlFor="sessionSubject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                                <label htmlFor="sessionSubject" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Subject</label>
                                 <select required id="sessionSubject" className="w-full rounded-lg border-gray-300"
                                     value={newSession.subjectId} onChange={e => setNewSession({ ...newSession, subjectId: e.target.value, lessonPlanId: undefined })}>
                                     <option value="">Select a Subject</option>
@@ -329,7 +329,7 @@ export default function Planner() {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Linked Lesson (Optional)</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Linked Lesson (Optional)</label>
                                 <select className="w-full rounded-lg border-gray-300"
                                     value={newSession.lessonPlanId || ''} onChange={e => setNewSession({ ...newSession, lessonPlanId: e.target.value ? Number(e.target.value) : undefined })}>
                                     <option value="">No specific lesson</option>
@@ -339,18 +339,18 @@ export default function Planner() {
                                 </select>
                             </div>
                             <div>
-                                <label htmlFor="sessionTopic" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                <label htmlFor="sessionTopic" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Description</label>
                                 <input required id="sessionTopic" type="text" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                     value={newSession.topic} onChange={e => setNewSession({ ...newSession, topic: e.target.value })} />
                             </div>
                             <div className="grid grid-cols-2 gap-2">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Start</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Start</label>
                                     <input required type="datetime-local" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         value={newSession.startTime} onChange={e => setNewSession({ ...newSession, startTime: e.target.value })} />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">End</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">End</label>
                                     <input required type="datetime-local" className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                         value={newSession.endTime} onChange={e => setNewSession({ ...newSession, endTime: e.target.value })} />
                                 </div>
@@ -358,7 +358,7 @@ export default function Planner() {
                             <div className="flex items-center gap-2">
                                 <input type="checkbox" id="isReview" className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                     checked={newSession.isReview} onChange={e => setNewSession({ ...newSession, isReview: e.target.checked })} />
-                                <label htmlFor="isReview" className="text-sm text-gray-700">This is a review session</label>
+                                <label htmlFor="isReview" className="text-sm text-gray-700 dark:text-slate-300">This is a review session</label>
                             </div>
                             <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2">
                                 <Plus className="w-4 h-4" /> Log Session
@@ -375,11 +375,11 @@ export default function Planner() {
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white dark:bg-slate-900 rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
                             <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-2">Delete Lesson</h3>
-                            <p className="text-gray-600 mb-6">Are you sure you want to delete this lesson? This action cannot be undone.</p>
+                            <p className="text-gray-600 dark:text-slate-400 mb-6">Are you sure you want to delete this lesson? This action cannot be undone.</p>
                             <div className="flex justify-end gap-3">
                                 <button
                                     onClick={() => setDeletingLessonId(null)}
-                                    className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                    className="px-4 py-2 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-md transition-colors"
                                 >
                                     Cancel
                                 </button>

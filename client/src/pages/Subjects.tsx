@@ -82,9 +82,9 @@ export default function Subjects() {
                 <div className="lg:col-span-2 space-y-4">
                     <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden">
                         <div className="divide-y divide-gray-200 dark:divide-slate-800">
-                            {subjects.length === 0 && <p className="p-6 text-center text-gray-500">No subjects found.</p>}
+                            {subjects.length === 0 && <p className="p-6 text-center text-gray-500 dark:text-slate-400">No subjects found.</p>}
                             {subjects.map(subject => (
-                                <div key={subject.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60">
+                                <div key={subject.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/60">
                                     {editingId === subject.id ? (
                                         <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-2 mr-4">
                                             <input className="rounded border-gray-300 text-sm" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} />
@@ -106,19 +106,19 @@ export default function Subjects() {
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className="font-medium text-gray-900 dark:text-slate-100 truncate">{subject.name}</h3>
                                                     {subject.Course && (
-                                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 mb-1">
+                                                        <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-slate-200 mb-1">
                                                             {subject.Course.name}
                                                         </span>
                                                     )}
-                                                    <p className="text-sm text-gray-500 truncate">{subject.description || 'No description'}</p>
+                                                    <p className="text-sm text-gray-500 dark:text-slate-400 truncate">{subject.description || 'No description'}</p>
 
                                                     {subject.lessonPlans && subject.lessonPlans.length > 0 && (
                                                         <div className="mt-2 max-w-xs">
-                                                            <div className="flex justify-between text-xs text-gray-400 mb-1">
+                                                            <div className="flex justify-between text-xs text-gray-400 dark:text-slate-500 mb-1">
                                                                 <span>Progress: {subject.lessonPlans.filter(l => l.isCompleted).length}/{subject.lessonPlans.length} lessons</span>
                                                                 <span>{Math.round((subject.lessonPlans.filter(l => l.isCompleted).length / subject.lessonPlans.length) * 100)}%</span>
                                                             </div>
-                                                            <div className="w-full bg-gray-100 rounded-full h-1.5">
+                                                            <div className="w-full bg-gray-100 dark:bg-slate-800 rounded-full h-1.5">
                                                                 <div
                                                                     className="h-1.5 rounded-full transition-all duration-300"
                                                                     style={{
@@ -132,8 +132,8 @@ export default function Subjects() {
                                                 </div>
                                             </div>
                                             <div className="flex gap-3 ml-4">
-                                                <button onClick={() => startEditing(subject)} className="text-gray-400 hover:text-indigo-600"><Edit2 className="w-5 h-5" /></button>
-                                                <button onClick={() => handleDelete(subject.id)} className="text-gray-400 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
+                                                <button onClick={() => startEditing(subject)} className="text-gray-400 dark:text-slate-500 hover:text-indigo-600"><Edit2 className="w-5 h-5" /></button>
+                                                <button onClick={() => handleDelete(subject.id)} className="text-gray-400 dark:text-slate-500 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
                                             </div>
                                         </>
                                     )}
@@ -148,22 +148,22 @@ export default function Subjects() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-slate-100 mb-4">Add New Subject</h3>
                     <form onSubmit={handleCreate} className="space-y-4">
                         <div>
-                            <label htmlFor="subject-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <label htmlFor="subject-name" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Name</label>
                             <input id="subject-name" required type="text" className="w-full rounded-lg border-gray-300" value={newForm.name} onChange={e => setNewForm({ ...newForm, name: e.target.value })} />
                         </div>
                         <div>
-                            <label htmlFor="subject-desc" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <label htmlFor="subject-desc" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Description</label>
                             <input id="subject-desc" type="text" className="w-full rounded-lg border-gray-300" value={newForm.description} onChange={e => setNewForm({ ...newForm, description: e.target.value })} />
                         </div>
                         <div>
-                            <label htmlFor="subject-course" className="block text-sm font-medium text-gray-700 mb-1">Course</label>
+                            <label htmlFor="subject-course" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Course</label>
                             <select id="subject-course" required className="w-full rounded-lg border-gray-300" value={newForm.courseId} onChange={e => setNewForm({ ...newForm, courseId: e.target.value })}>
                                 <option value="" disabled>Select a Course</option>
                                 {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="subject-color" className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+                            <label htmlFor="subject-color" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Color</label>
                             <input id="subject-color" type="color" className="w-full h-10 rounded-lg p-1" value={newForm.color} onChange={e => setNewForm({ ...newForm, color: e.target.value })} />
                         </div>
                         <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 flex items-center justify-center gap-2">

@@ -99,7 +99,7 @@ export default function Templates() {
                 {/* List Section */}
                 <div className="lg:col-span-2 space-y-4">
                     {templates.length === 0 && (
-                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-12 text-center text-gray-500">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-12 text-center text-gray-500 dark:text-slate-400">
                             No templates created yet.
                         </div>
                     )}
@@ -121,7 +121,7 @@ export default function Templates() {
                                                 </button>
                                                 <button
                                                     onClick={() => setDeletingId(null)}
-                                                    className="text-gray-500 hover:text-gray-700 text-xs"
+                                                    className="text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 text-xs"
                                                     aria-label="Cancel delete"
                                                 >
                                                     No
@@ -131,14 +131,14 @@ export default function Templates() {
                                             <>
                                                 <button
                                                     onClick={() => startEditing(template)}
-                                                    className="text-gray-400 hover:text-indigo-600"
+                                                    className="text-gray-400 dark:text-slate-500 hover:text-indigo-600"
                                                     aria-label="Edit template"
                                                 >
                                                     <Edit2 className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => setDeletingId(template.id)}
-                                                    className="text-gray-400 hover:text-red-500"
+                                                    className="text-gray-400 dark:text-slate-500 hover:text-red-500"
                                                     aria-label="Delete template"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -147,10 +147,10 @@ export default function Templates() {
                                         )}
                                     </div>
                                 </div>
-                                {template.description && <p className="text-sm text-gray-600 mb-4">{template.description}</p>}
+                                {template.description && <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">{template.description}</p>}
                                 <div className="space-y-2 mt-auto">
-                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Items ({template.items.length})</p>
-                                    <ul className="text-sm text-gray-700 list-disc list-inside space-y-1">
+                                    <p className="text-xs font-semibold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Items ({template.items.length})</p>
+                                    <ul className="text-sm text-gray-700 dark:text-slate-300 list-disc list-inside space-y-1">
                                         {template.items.map(item => (
                                             <li key={item.id} className="break-words">{item.text}</li>
                                         ))}
@@ -170,7 +170,7 @@ export default function Templates() {
                         {editingId && (
                             <button
                                 onClick={resetForm}
-                                className="text-gray-400 hover:text-gray-600"
+                                className="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:text-slate-400"
                                 aria-label="Cancel editing"
                             >
                                 <X className="w-5 h-5" />
@@ -179,7 +179,7 @@ export default function Templates() {
                     </div>
                     <form onSubmit={handleSaveTemplate} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Name</label>
                             <input
                                 required
                                 type="text"
@@ -190,7 +190,7 @@ export default function Templates() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Description</label>
                             <textarea
                                 className="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                                 rows={2}
@@ -199,7 +199,7 @@ export default function Templates() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Checklist Items</label>
+                            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300">Checklist Items</label>
                             {newItems.map((item, index) => (
                                 <div key={index} className="flex gap-2">
                                     <input
@@ -211,7 +211,7 @@ export default function Templates() {
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveInputItem(index)}
-                                        className="text-gray-400 hover:text-red-500"
+                                        className="text-gray-400 dark:text-slate-500 hover:text-red-500"
                                         aria-label="Remove checklist item"
                                     >
                                         <Trash2 className="w-4 h-4" />

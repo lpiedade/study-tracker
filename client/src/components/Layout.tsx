@@ -68,7 +68,7 @@ export default function Layout() {
                                     'flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors',
                                     isActive
                                         ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-800 dark:text-indigo-300'
-                                        : 'text-gray-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                                        : 'text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-800'
                                 )}
                             >
                                 <Icon className="w-5 h-5" />
@@ -81,7 +81,7 @@ export default function Layout() {
                     <button
                         type="button"
                         onClick={toggleTheme}
-                        className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                        className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
                         aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
                     >
                         {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -100,7 +100,7 @@ export default function Layout() {
                     <button
                         type="button"
                         onClick={toggleTheme}
-                        className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                        className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-200 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
                         aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
                     >
                         {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

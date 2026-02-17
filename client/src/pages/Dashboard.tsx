@@ -38,7 +38,7 @@ export default function Dashboard() {
         <div className="space-y-8">
             <div>
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Dashboard</h2>
-                <p className="text-gray-500 mt-1">Welcome back! Here's your study overview.</p>
+                <p className="text-gray-500 dark:text-slate-400 mt-1">Welcome back! Here's your study overview.</p>
             </div>
 
             {/* Stats Cards */}
@@ -80,23 +80,23 @@ export default function Dashboard() {
                 </div>
                 <div className="divide-y divide-gray-200 dark:divide-slate-800">
                     {recentSessions.length === 0 ? (
-                        <div className="p-6 text-center text-gray-500">No recent study sessions found.</div>
+                        <div className="p-6 text-center text-gray-500 dark:text-slate-400">No recent study sessions found.</div>
                     ) : (
                         recentSessions.map((session) => (
-                            <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-800/60 transition-colors">
+                            <div key={session.id} className="p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: session.Subject?.color }} />
                                         <h4 className="font-medium text-gray-900 dark:text-slate-100">{session.Subject?.name || 'Unknown'}</h4>
                                     </div>
-                                    <p className="text-sm text-gray-500">{session.topic}</p>
+                                    <p className="text-sm text-gray-500 dark:text-slate-400">{session.topic}</p>
                                 </div>
                                 <div className="text-right">
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${session.isReview ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
                                         }`}>
                                         {session.isReview ? 'Review' : 'New Study'}
                                     </span>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">
                                         {format(new Date(session.startTime), 'MMM d, h:mm a')}
                                     </p>
                                     {session.LessonPlan && (
@@ -118,9 +118,9 @@ function StatsCard({ title, value, icon: Icon, color, subtext }: { title: string
     return (
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-6 flex items-start justify-between">
             <div>
-                <p className="text-sm font-medium text-gray-500">{title}</p>
+                <p className="text-sm font-medium text-gray-500 dark:text-slate-400">{title}</p>
                 <p className="mt-2 text-3xl font-semibold text-gray-900 dark:text-slate-100">{value}</p>
-                {subtext && <p className="mt-1 text-xs font-medium text-gray-500">{subtext}</p>}
+                {subtext && <p className="mt-1 text-xs font-medium text-gray-500 dark:text-slate-400">{subtext}</p>}
             </div>
             <div className={`p-3 rounded-lg ${color} text-white`}>
                 <Icon className="w-6 h-6" />
