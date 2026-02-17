@@ -38,10 +38,33 @@ describe('Dashboard', () => {
         render(<Dashboard />);
         await waitFor(() => {
             expect(screen.getByText('Dashboard')).toBeInTheDocument();
-            expect(screen.getByText('5.5')).toBeInTheDocument(); // totalHours
-            expect(screen.getByText('10')).toBeInTheDocument(); // totalSessions
+            expect(screen.getByText('1.0')).toBeInTheDocument(); // totalHours from sessions
+            expect(screen.getByText('1')).toBeInTheDocument(); // totalSessions from sessions
             expect(screen.getByText('88.2')).toBeInTheDocument(); // averageScore
             expect(screen.getByText('2')).toBeInTheDocument(); // overdue
+        });
+    });
+
+    it('calculates total study hours from created sessions durations', async () => {
+        mockGet.mockImplementation((url: string) => {
+            if (url === '/stats/summary') return Promise.resolve({ data: { totalSessions: 999, totalHours: 999, averageScore: 77.7 } });
+            if (url === '/stats/progress') return Promise.resolve({ data: { overdueLessons: 0 } });
+            if (url === '/sessions') return Promise.resolve({
+                data: [
+                    { id: 1, topic: 'Session 1', startTime: '2026-01-15T10:00:00Z', endTime: '2026-01-15T11:30:00Z', isReview: false, Subject: { name: 'Math' } },
+                    { id: 2, topic: 'Session 2', startTime: '2026-01-16T08:15:00Z', endTime: '2026-01-16T09:00:00Z', isReview: false, Subject: { name: 'Physics' } },
+                    { id: 3, topic: 'Session 3', startTime: '2026-01-17T12:00:00Z', endTime: '2026-01-17T14:00:00Z', isReview: true, Subject: { name: 'Chemistry' } },
+                ],
+            });
+            return Promise.resolve({ data: [] });
+        });
+
+        render(<Dashboard />);
+        await waitFor(() => {
+            // 1.5h + 0.75h + 2h = 4.25h -> displayed as 4.3
+            expect(screen.getByText('4.3')).toBeInTheDocument();
+            expect(screen.getByText('3')).toBeInTheDocument();
+            expect(screen.queryByText('999')).not.toBeInTheDocument();
         });
     });
 

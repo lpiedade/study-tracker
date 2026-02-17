@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [2026-02-17]
+
+### Fixes
+- Fix [#9](https://github.com/lpiedade/study-tracker/issues/9): apply course-based filtering for subjects in the Log Session form
+- Fix dashboard "Total Study Hours" widget to calculate from study session durations
+
 ## [2026-02-16]
 
 ### Documentation

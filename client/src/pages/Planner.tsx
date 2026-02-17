@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { CheckCircle, Clock, Plus, Trash2, Edit2, X, BookOpen } from 'lucide-react';
 import api from '../lib/api';
-import type { LessonPlan, StudySession, Subject, ChecklistTemplate } from '../types';
+import type { Course, LessonPlan, StudySession, Subject, ChecklistTemplate } from '../types';
 import clsx from 'clsx';
 import { parseLocalDate } from '../lib/dateUtils';
 
@@ -11,12 +11,14 @@ export default function Planner() {
     const [lessons, setLessons] = useState<LessonPlan[]>([]);
     const [sessions, setSessions] = useState<StudySession[]>([]);
     const [subjects, setSubjects] = useState<Subject[]>([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [templates, setTemplates] = useState<ChecklistTemplate[]>([]);
     const [loading, setLoading] = useState(true);
 
     // Form states
     const [newLesson, setNewLesson] = useState({ title: '', subjectId: '', plannedDate: format(new Date(), 'yyyy-MM-dd'), templateId: '' });
     const [newSession, setNewSession] = useState<{
+        courseId: string | number;
         subjectId: string | number;
         topic: string;
         startTime: string;
@@ -25,22 +27,24 @@ export default function Planner() {
         notes: string;
         lessonPlanId?: number;
     }>({
-        subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined
+        courseId: '', subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined
     });
     const [deletingLessonId, setDeletingLessonId] = useState<number | null>(null);
     const [editingLessonId, setEditingLessonId] = useState<number | null>(null);
 
     const fetchData = async () => {
         try {
-            const [lessonsRes, sessionsRes, subjectsRes, templatesRes] = await Promise.all([
+            const [lessonsRes, sessionsRes, subjectsRes, coursesRes, templatesRes] = await Promise.all([
                 api.get('/lessons'),
                 api.get('/sessions'),
                 api.get('/subjects'),
+                api.get('/courses'),
                 api.get('/templates')
             ]);
             setLessons(lessonsRes.data);
             setSessions(sessionsRes.data);
             setSubjects(subjectsRes.data);
+            setCourses(coursesRes.data);
             setTemplates(templatesRes.data);
         } catch (err) {
             console.error(err);
@@ -123,8 +127,9 @@ export default function Planner() {
     const handleCreateSession = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await api.post('/sessions', newSession);
-            setNewSession({ subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined });
+            const { courseId: _courseId, ...sessionPayload } = newSession;
+            await api.post('/sessions', sessionPayload);
+            setNewSession({ courseId: '', subjectId: '', topic: '', startTime: '', endTime: '', isReview: false, notes: '', lessonPlanId: undefined });
             fetchData();
         } catch (err) {
             alert('Failed to log session');
@@ -145,6 +150,10 @@ export default function Planner() {
             fetchData();
         } catch (err) { console.error(err); }
     };
+
+    const filteredSubjects = newSession.courseId
+        ? subjects.filter(subject => String(subject.courseId) === String(newSession.courseId))
+        : [];
 
     if (loading) return <div className="p-8">Loading...</div>;
 
@@ -321,11 +330,30 @@ export default function Planner() {
                     ) : (
                         <form onSubmit={handleCreateSession} className="space-y-4">
                             <div>
+                                <label htmlFor="sessionCourse" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Course</label>
+                                <select
+                                    required
+                                    id="sessionCourse"
+                                    className="w-full rounded-lg border-gray-300"
+                                    value={newSession.courseId}
+                                    onChange={e => setNewSession({ ...newSession, courseId: e.target.value, subjectId: '', lessonPlanId: undefined })}
+                                >
+                                    <option value="">Select a Course</option>
+                                    {courses.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                                </select>
+                            </div>
+                            <div>
                                 <label htmlFor="sessionSubject" className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Subject</label>
-                                <select required id="sessionSubject" className="w-full rounded-lg border-gray-300"
-                                    value={newSession.subjectId} onChange={e => setNewSession({ ...newSession, subjectId: e.target.value, lessonPlanId: undefined })}>
-                                    <option value="">Select a Subject</option>
-                                    {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                                <select
+                                    required
+                                    id="sessionSubject"
+                                    disabled={!newSession.courseId}
+                                    className="w-full rounded-lg border-gray-300 disabled:bg-gray-100 disabled:text-gray-400 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+                                    value={newSession.subjectId}
+                                    onChange={e => setNewSession({ ...newSession, subjectId: e.target.value, lessonPlanId: undefined })}
+                                >
+                                    <option value="">{newSession.courseId ? 'Select a Subject' : 'Select a Course first'}</option>
+                                    {filteredSubjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </div>
                             <div>

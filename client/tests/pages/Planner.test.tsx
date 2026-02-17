@@ -23,11 +23,12 @@ describe('Planner', () => {
         vi.spyOn(window, 'confirm').mockReturnValue(true);
     });
 
-    const setupMocks = (lessons: any[] = [], sessions: any[] = [], subjects: any[] = [], templates: any[] = []) => {
+    const setupMocks = (lessons: any[] = [], sessions: any[] = [], subjects: any[] = [], courses: any[] = [], templates: any[] = []) => {
         mockGet.mockImplementation((url: string) => {
             if (url === '/lessons') return Promise.resolve({ data: lessons });
             if (url === '/sessions') return Promise.resolve({ data: sessions });
             if (url === '/subjects') return Promise.resolve({ data: subjects });
+            if (url === '/courses') return Promise.resolve({ data: courses });
             if (url === '/templates') return Promise.resolve({ data: templates });
             return Promise.resolve({ data: [] });
         });
@@ -297,12 +298,16 @@ describe('Planner', () => {
     });
 
     it('creates a session via form', async () => {
-        setupMocks([], [], [{ id: 1, name: 'Math' }]);
+        setupMocks([], [], [{ id: 1, name: 'Math', courseId: 10 }], [{ id: 10, name: 'Science' }]);
         mockPost.mockResolvedValue({});
         render(<Planner />);
         await waitFor(() => {
             fireEvent.click(screen.getByText('Session History'));
         });
+
+        // Select course first
+        const courseSelect = screen.getByLabelText(/course/i) as HTMLSelectElement;
+        await userEvent.selectOptions(courseSelect, '10');
 
         // Fill subject
         const subjectSelect = screen.getByLabelText(/subject/i) as HTMLSelectElement;
@@ -319,12 +324,15 @@ describe('Planner', () => {
     });
 
     it('shows alert on session create error', async () => {
-        setupMocks([], [], [{ id: 1, name: 'Math' }]);
+        setupMocks([], [], [{ id: 1, name: 'Math', courseId: 10 }], [{ id: 10, name: 'Science' }]);
         mockPost.mockRejectedValue(new Error('fail'));
         render(<Planner />);
         await waitFor(() => {
             fireEvent.click(screen.getByText('Session History'));
         });
+
+        const courseSelect = screen.getByLabelText(/course/i) as HTMLSelectElement;
+        await userEvent.selectOptions(courseSelect, '10');
 
         const topicInput = screen.getByRole('textbox');
         await userEvent.type(topicInput, 'Fail');
@@ -341,5 +349,37 @@ describe('Planner', () => {
         await waitFor(() => {
             expect(screen.getByText('Study Planner')).toBeInTheDocument();
         });
+    });
+
+    it('filters session subjects by selected course', async () => {
+        setupMocks(
+            [],
+            [],
+            [
+                { id: 1, name: 'Algebra', courseId: 10 },
+                { id: 2, name: 'Biology', courseId: 20 }
+            ],
+            [
+                { id: 10, name: 'Math' },
+                { id: 20, name: 'Science' }
+            ]
+        );
+
+        render(<Planner />);
+        await waitFor(() => {
+            fireEvent.click(screen.getByText('Session History'));
+        });
+
+        const subjectSelect = screen.getByLabelText(/subject/i) as HTMLSelectElement;
+        expect(subjectSelect).toBeDisabled();
+        expect(screen.queryByRole('option', { name: 'Algebra' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('option', { name: 'Biology' })).not.toBeInTheDocument();
+
+        const courseSelect = screen.getByLabelText(/course/i) as HTMLSelectElement;
+        await userEvent.selectOptions(courseSelect, '10');
+
+        expect(subjectSelect).not.toBeDisabled();
+        expect(screen.getByRole('option', { name: 'Algebra' })).toBeInTheDocument();
+        expect(screen.queryByRole('option', { name: 'Biology' })).not.toBeInTheDocument();
     });
 });

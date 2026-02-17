@@ -549,6 +549,40 @@ describe('Stats API', () => {
         expect(typeof res.body.totalHours).toBe('number');
     });
 
+    it('GET /api/stats/summary updates totalHours after creating sessions', async () => {
+        const before = await request(app).get('/api/stats/summary');
+        expect(before.status).toBe(200);
+
+        const sessionA = await request(app)
+            .post('/api/sessions')
+            .send({
+                subjectId: createdIds.subjects[0],
+                topic: 'Stats Session A',
+                startTime: '2026-02-01T10:00:00Z',
+                endTime: '2026-02-01T12:00:00Z',
+                isReview: false,
+            });
+        expect(sessionA.status).toBe(200);
+        createdIds.sessions.push(sessionA.body.id);
+
+        const sessionB = await request(app)
+            .post('/api/sessions')
+            .send({
+                subjectId: createdIds.subjects[0],
+                topic: 'Stats Session B',
+                startTime: '2026-02-02T13:00:00Z',
+                endTime: '2026-02-02T14:00:00Z',
+                isReview: false,
+            });
+        expect(sessionB.status).toBe(200);
+        createdIds.sessions.push(sessionB.body.id);
+
+        const after = await request(app).get('/api/stats/summary');
+        expect(after.status).toBe(200);
+        expect(after.body.totalSessions).toBe(before.body.totalSessions + 2);
+        expect(after.body.totalHours).toBeCloseTo(before.body.totalHours + 3, 1);
+    });
+
     it('GET /api/stats/progress returns overdue count', async () => {
         const res = await request(app).get('/api/stats/progress');
         expect(res.status).toBe(200);

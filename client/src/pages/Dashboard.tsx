@@ -20,9 +20,23 @@ export default function Dashboard() {
                     api.get('/sessions')
                 ]);
 
-                setStats(summaryRes.data);
+                const sessions = sessionsRes.data as StudySession[];
+                const totalHours = sessions.reduce((acc, session) => {
+                    const start = new Date(session.startTime).getTime();
+                    const end = new Date(session.endTime).getTime();
+                    if (Number.isNaN(start) || Number.isNaN(end) || end <= start) {
+                        return acc;
+                    }
+                    return acc + (end - start) / (1000 * 60 * 60);
+                }, 0);
+
+                setStats({
+                    ...summaryRes.data,
+                    totalSessions: sessions.length,
+                    totalHours: Math.round(totalHours * 10) / 10
+                });
                 setOverdue(progressRes.data.overdueLessons);
-                setRecentSessions(sessionsRes.data.slice(0, 5)); // Take top 5
+                setRecentSessions(sessions.slice(0, 5)); // Take top 5
             } catch (error) {
                 console.error("Failed to fetch dashboard data", error);
             } finally {
