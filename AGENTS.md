@@ -14,6 +14,7 @@ This repository is a Node.js workspace monorepo with:
 - Always follow this root file for shared rules.
 - When working in `client/`, also follow `client/AGENTS.md`.
 - When working in `server/`, also follow `server/AGENTS.md`.
+- When working in `.agents/`, also follow `.agents/AGENTS.md`.
 - If rules conflict, the more specific (module-level) file takes precedence for that module.
 
 ## Monorepo Layout
@@ -85,21 +86,8 @@ Run all commands from repo root unless noted.
   - `docs/testing.md`
 - Record significant architectural decisions as ADRs in `docs/adr`.
 
-## Codex Agent System Conventions
+## Global Request Classification and Routing
 
-- Local agent assets live under `.agents/`:
-  - agents: `.agents/agents/*.md`
-  - skills: `.agents/skills/*/SKILL.md`
-  - workflows: `.agents/workflows/*.md`
-  - helper scripts: `.agents/scripts/*.py`
-  - runtime rules: `.agents/rules/CODEX.md`
-- Naming for agent files and frontmatter `name` values:
-  - use `kebab-case` (`backend-specialist`, `test-engineer`, `project-planner`)
-  - keep file name and frontmatter `name` identical
-- Naming for skill folders and frontmatter `name` values:
-  - use `kebab-case` (`clean-code`, `api-patterns`, `plan-writing`)
-  - keep folder name and frontmatter `name` identical
-- Automation naming (Codex Desktop):
-  - use short, action-oriented names (`daily-test-report`, `weekly-dependency-check`)
-  - automation setup is managed outside this repo at `$CODEX_HOME/automations/<id>/automation.toml`
-  - do not commit local Codex automation state into this repository
+Apply this routing for all incoming requests in this repository (not only `.agents/` work).
+For the detailed classification rules and examples, use `.agents/AGENTS.md` as reference
+
