@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Tracker Dashboard Prototype</title>
+  <style>
+    :root {
+      --bg-1: #f5efe6;
+      --bg-2: #e3edf6;
+      --ink: #1c2430;
+      --muted: #5d6876;
+      --card: rgba(255,255,255,0.68);
+      --line: rgba(28,36,48,0.12);
+      --accent: #ff6b35;
+      --teal: #0e7c86;
+      --green: #2e9d67;
+      --amber: #e8a52a;
+      --rose: #cc4f78;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #ffd9c9 0%, transparent 60%),
+        radial-gradient(900px 420px at 100% 0%, #b8d9f6 0%, transparent 55%),
+        linear-gradient(130deg, var(--bg-1), var(--bg-2));
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 1365px;
+      height: 768px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      border-radius: 26px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.45);
+      border: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 20px 70px rgba(30, 40, 60, 0.2);
+      backdrop-filter: blur(8px);
+    }
+
+    .sidebar {
+      padding: 28px 22px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.55);
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 26px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(160deg, var(--accent), #ff9f68);
+      box-shadow: 0 0 0 6px rgba(255, 107, 53, 0.18);
+    }
+
+    .streak {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    .streak h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      color: var(--muted);
+    }
+
+    .streak .big {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .menu {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .menu .item {
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-weight: 600;
+      color: #2d3643;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+
+    .menu .item.active {
+      background: linear-gradient(90deg, #ffe6db, #fff3de);
+      border-color: rgba(255, 107, 53, 0.3);
+      color: #5f2e1b;
+    }
+
+    .focus-box {
+      border-radius: 15px;
+      border: 1px dashed rgba(14, 124, 134, 0.35);
+      background: rgba(14, 124, 134, 0.09);
+      padding: 14px;
+      font-size: 13px;
+      color: #184d53;
+      line-height: 1.4;
+    }
+
+    .main {
+      padding: 24px 28px;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 18px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+    }
+
+    .top h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.12;
+    }
+
+    .top p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .btn {
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      background: linear-gradient(120deg, var(--accent), #ff8a5c);
+      color: white;
+      box-shadow: 0 10px 22px rgba(255, 107, 53, 0.28);
+    }
+
+    .kpi-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .kpi-title {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .kpi-note {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #3f4b5a;
+    }
+
+    .content {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1.35fr 1fr;
+      min-height: 0;
+    }
+
+    .left-col, .right-col {
+      display: grid;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .chart {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .chart h3, .tasks h3, .right-col h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .bars {
+      display: grid;
+      align-items: end;
+      gap: 10px;
+      grid-template-columns: repeat(7, 1fr);
+      height: 180px;
+    }
+
+    .bar {
+      border-radius: 10px 10px 6px 6px;
+      background: linear-gradient(180deg, rgba(14,124,134,0.9), rgba(14,124,134,0.3));
+      position: relative;
+      min-height: 20px;
+    }
+
+    .bar::after {
+      content: attr(data-day);
+      position: absolute;
+      bottom: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .tasks ul {
+      list-style: none;
+      margin: 12px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 9px;
+    }
+
+    .tasks li {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.62);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .pill.green { background: rgba(46,157,103,0.2); color: #1d6a44; }
+    .pill.amber { background: rgba(232,165,42,0.22); color: #8c5e12; }
+    .pill.rose { background: rgba(204,79,120,0.2); color: #7f2d49; }
+
+    .small-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
+    }
+
+    .ring {
+      width: 140px;
+      height: 140px;
+      margin: 8px auto 0;
+      border-radius: 50%;
+      background: conic-gradient(var(--green) 0 68%, #e6ecef 68% 100%);
+      display: grid;
+      place-items: center;
+    }
+
+    .ring span {
+      width: 102px;
+      height: 102px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #225f43;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .list .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #334152;
+      border-bottom: 1px dashed rgba(30,40,60,0.12);
+      padding-bottom: 6px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    .teal { background: var(--teal); }
+    .green { background: var(--green); }
+    .amber { background: var(--amber); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand"><span class="dot"></span>Study Tracker</div>
+      <section class="streak">
+        <h4>Current Streak</h4>
+        <div class="big">19 days</div>
+      </section>
+      <nav class="menu">
+        <div class="item active">Dashboard</div>
+        <div class="item">Study Sessions</div>
+        <div class="item">Courses</div>
+        <div class="item">Goals</div>
+        <div class="item">Insights</div>
+        <div class="item">Settings</div>
+      </nav>
+      <div class="focus-box">
+        Focus for today: finish "Data Structures" lesson 4 and complete one 25-min review block.
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="top">
+        <div>
+          <h1>Make today count.<br/>You are 82% on weekly goal.</h1>
+          <p>Monday, February 17 • 3 sessions completed • 1 pending review</p>
+        </div>
+        <button class="btn">Start Focus Session</button>
+      </section>
+
+      <section class="kpi-grid">
+        <article class="card">
+          <div class="kpi-title">Study Minutes</div>
+          <div class="kpi-value">1,245</div>
+          <div class="kpi-note">+18% vs last week</div>
+        </article>
+        <article class="card">
+          <div class="kpi-title">Completion Rate</div>
+          <div class="kpi-value">68%</div>
+          <div class="kpi-note">2 courses above target</div>
+        </article>
+        <article class="card">
+          <div class="kpi-title">Active Courses</div>
+          <div class="kpi-value">6</div>
+          <div class="kpi-note">1 at risk</div>
+        </article>
+        <article class="card">
+          <div class="kpi-title">Next Milestone</div>
+          <div class="kpi-value">4 days</div>
+          <div class="kpi-note">Frontend capstone checkpoint</div>
+        </article>
+      </section>
+
+      <section class="content">
+        <div class="left-col">
+          <article class="card chart">
+            <h3>Weekly Momentum</h3>
+            <div class="bars">
+              <div class="bar" style="height: 48%" data-day="Mon"></div>
+              <div class="bar" style="height: 56%" data-day="Tue"></div>
+              <div class="bar" style="height: 63%" data-day="Wed"></div>
+              <div class="bar" style="height: 74%" data-day="Thu"></div>
+              <div class="bar" style="height: 82%" data-day="Fri"></div>
+              <div class="bar" style="height: 59%" data-day="Sat"></div>
+              <div class="bar" style="height: 67%" data-day="Sun"></div>
+            </div>
+            <div class="legend">
+              <span><i class="dot teal"></i>Minutes</span>
+              <span><i class="dot green"></i>Goal adherence</span>
+              <span><i class="dot amber"></i>Missed blocks</span>
+            </div>
+          </article>
+
+          <article class="card tasks">
+            <h3>Today Queue</h3>
+            <ul>
+              <li><span>Algorithms: Graph traversal quiz</span><span class="pill green">Ready</span></li>
+              <li><span>React: State management recap</span><span class="pill amber">Due 6pm</span></li>
+              <li><span>SQL: Joins and aggregation practice</span><span class="pill rose">Overdue</span></li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="right-col">
+          <article class="card">
+            <h3>Goal Progress</h3>
+            <div class="ring"><span>68%</span></div>
+            <div class="list">
+              <div class="row"><span>Weekly target</span><strong>1,800 min</strong></div>
+              <div class="row"><span>Completed</span><strong>1,245 min</strong></div>
+              <div class="row"><span>Remaining</span><strong>555 min</strong></div>
+            </div>
+          </article>
+
+          <article class="card">
+            <h3>Course Health</h3>
+            <div class="list">
+              <div class="row"><span>System Design</span><strong>On Track</strong></div>
+              <div class="row"><span>Frontend Masters</span><strong>At Risk</strong></div>
+              <div class="row"><span>Data Structures</span><strong>On Track</strong></div>
+              <div class="row"><span>ML Foundations</span><strong>Ahead</strong></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
