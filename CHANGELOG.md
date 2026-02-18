@@ -6,6 +6,7 @@ All notable changes to this project are documented in this file.
 
 ### Documentation
 - Add brand guideline documentation at `docs/brand-guidelines.md`
+- Add skill auto-selection rules so React tasks use `vercel-react-best-practices` and Python tasks use `python-design-patterns`
 
 ## [2026-02-17]
 

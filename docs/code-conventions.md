@@ -38,5 +38,5 @@
 - Record architectural decisions in ADRs under `docs/adr`.
 - Keep high-level project docs current:
   - `docs/architecture.md`
-  - `docs/conventions.md`
+  - `docs/code-conventions.md`
   - `docs/testing.md`

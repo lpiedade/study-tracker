@@ -17,3 +17,6 @@ dist-ssr
 tmp
 output
 
+# it's a submodule, lets ignore it
+.agents
+

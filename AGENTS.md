@@ -96,4 +96,3 @@ Run all commands from repo root unless noted.
 
 Apply this routing for all incoming requests in this repository (not only `.agents/` work).
 For the detailed classification rules and examples, use `.agents/AGENTS.md` as reference
-

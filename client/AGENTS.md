@@ -6,6 +6,10 @@ Guidance for contributors and coding agents working in the frontend module.
 
 Applies to all files under `client/`.
 
+## Required Skill
+
+- For React/Vite/TypeScript UI work in this module, use `.agents/skills/agent-frontend-engineer`.
+
 ## Commands Reference
 
 Run commands from repo root unless noted.
