@@ -82,9 +82,15 @@ Run all commands from repo root unless noted.
 
 - Update docs when behavior or architecture changes:
   - `docs/architecture.md`
-  - `docs/conventions.md`
+  - `docs/code-conventions.md`
   - `docs/testing.md`
 - Record significant architectural decisions as ADRs in `docs/adr`.
+
+## Visual Identity
+
+- Update docs when visual identity changes:
+  - `docs/brand-guidelines.md` 
+   
 
 ## Global Request Classification and Routing
 

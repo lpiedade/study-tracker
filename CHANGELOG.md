@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [2026-02-18]
+
+### Documentation
+- Add brand guideline documentation at `docs/brand-guidelines.md`
+
 ## [2026-02-17]
 
 ### Fixes
