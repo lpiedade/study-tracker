@@ -75,6 +75,7 @@ export default function Dashboard() {
                     value={stats?.averageScore.toFixed(1) || "0"}
                     icon={Trophy}
                     color="bg-emerald-500"
+                    subtext={stats?.averageScore == 0 ? "Practice exams to display your average scores" : "Well Done, Try To increase them more"}
                 />
                 <StatsCard
                     title="Overdue Lessons"
