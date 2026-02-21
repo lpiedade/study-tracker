@@ -1,5 +1,10 @@
 # Study Tracker
 
+
+[![Tests](https://github.com/lpiedade/study-tracker/actions/workflows/test.yml/badge.svg)](https://github.com/lpiedade/study-tracker/actions/workflows/test.yml)
+[![codecov](https://codecov.io/gh/lpiedade/study-tracker/branch/main/graph/badge.svg)](https://app.codecov.io/github/lpiedade/study-tracker)
+![Status](https://img.shields.io/badge/status-active-success)
+
 A local-first web application for study planning and tracking.
 
 ## Features
@@ -12,10 +17,10 @@ A local-first web application for study planning and tracking.
 ## Screenshots
 
 ### Dashboard
-![Dashboard](assets/dashboard.png)
+![Dashboard](docs/assets/dashboard.png)
 
 ### Calendar
-![Calendar View](assets/calendar.png)
+![Calendar View](docs/assets/calendar.png)
 
 ## Prerequisites
 - Node.js (v18+)

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { addDays, subDays, addMonths, subMonths } from "date-fns";
 import { DndContext, DragOverlay, useSensor, useSensors, PointerSensor } from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import api from "../lib/api";
 import type { LessonPlan, Subject } from "../types";
 import CalendarHeader from "../components/calendar/CalendarHeader";
@@ -20,21 +20,20 @@ export default function Calendar() {
     }));
 
     useEffect(() => {
-        fetchData();
+        const fetchData = async () => {
+            try {
+                const [lessonsRes, subjectsRes] = await Promise.all([
+                    api.get('/lessons'),
+                    api.get('/subjects')
+                ]);
+                setLessons(lessonsRes.data);
+                setSubjects(subjectsRes.data);
+            } catch (error) {
+                console.error("Failed to fetch calendar data", error);
+            }
+        };
+        void fetchData();
     }, []);
-
-    const fetchData = async () => {
-        try {
-            const [lessonsRes, subjectsRes] = await Promise.all([
-                api.get('/lessons'),
-                api.get('/subjects')
-            ]);
-            setLessons(lessonsRes.data);
-            setSubjects(subjectsRes.data);
-        } catch (error) {
-            console.error("Failed to fetch calendar data", error);
-        }
-    };
 
     const handleNavigate = (direction: 'prev' | 'next' | 'today') => {
         if (direction === 'today') {
@@ -49,7 +48,7 @@ export default function Calendar() {
         }
     };
 
-    const handleDragStart = (event: any) => {
+    const handleDragStart = (event: DragStartEvent) => {
         setActiveDragLesson(event.active.data.current.lesson);
     };
 
@@ -100,7 +99,7 @@ export default function Calendar() {
                 subjects={subjects}
             />
 
-            <div className="flex-1 overflow-auto bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <div className="flex-1 overflow-auto bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 p-4">
                 <DndContext
                     sensors={sensors}
                     onDragStart={handleDragStart}
@@ -127,7 +126,7 @@ export default function Calendar() {
 
                     <DragOverlay>
                         {activeDragLesson ? (
-                            <div className="bg-white p-2 border border-indigo-200 rounded-lg shadow-xl opacity-90 ring-2 ring-indigo-500 rotate-2 w-[150px]">
+                            <div className="bg-white dark:bg-slate-900 p-2 border border-indigo-200 rounded-lg shadow-xl opacity-90 ring-2 ring-indigo-500 rotate-2 w-[150px]">
                                 <div className="h-1 w-1 bg-indigo-500 rounded-full mb-1"></div>
                                 <div className="text-xs font-semibold">{activeDragLesson.title}</div>
                             </div>

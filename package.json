@@ -1,0 +1,13 @@
+{
+    "name": "study-tracker-root",
+    "private": true,
+    "workspaces": [
+        "server",
+        "client"
+    ],
+    "scripts": {
+        "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
+        "test": "npm test --workspaces"
+    },
+    "license": "GPL-3.0-only"
+}

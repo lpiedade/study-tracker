@@ -1,5 +1,19 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
-  @apply bg-gray-50 text-gray-900;
+  @apply bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100;
+}
+
+@layer base {
+  input,
+  select,
+  textarea {
+    @apply dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    @apply dark:text-slate-500;
+  }
 }

@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  engineType = "library"
 }
 
 datasource db {
@@ -7,11 +8,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+model Course {
+  id          Int       @id @default(autoincrement())
+  name        String    
+  description String?
+  subjects    Subject[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Subject {
   id            Int            @id @default(autoincrement())
   name          String         @unique
   description   String?
   color         String?
+  courseId      Int?
+  Course        Course?        @relation(fields: [courseId], references: [id])
   studySessions StudySession[]
   lessonPlans   LessonPlan[]
   examResults   ExamResult[]

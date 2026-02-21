@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
-import { app } from './app';
+import { app } from '../src/app';
 
 describe('API Routes', () => {
     it('GET /api/sessions returns 200 and array', async () => {

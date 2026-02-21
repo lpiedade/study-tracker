@@ -1,20 +1,58 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import { PrismaClient } from '@prisma/client';
+//import { PrismaClient } from '@prisma/client';
+import { prisma } from './prisma';
+export { prisma };
 
 export const app = express();
-export const prisma = new PrismaClient();
+//export const prisma = new PrismaClient();
 
 app.use(cors());
 app.use(express.json());
+
+
+// --- Courses ---
+app.get('/api/courses', async (req, res) => {
+    try {
+        const courses = await prisma.course.findMany({
+            orderBy: { name: 'asc' },
+            include: { subjects: true }
+        });
+        res.json(courses);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch courses' });
+    }
+});
+
+app.post('/api/courses', async (req, res) => {
+    try {
+        const { name, description } = req.body;
+        const course = await prisma.course.create({
+            data: { name, description }
+        });
+        res.json(course);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to create course' });
+    }
+});
+
+app.delete('/api/courses/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.course.delete({ where: { id: Number(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete course' });
+    }
+});
 
 // --- Subjects ---
 app.get('/api/subjects', async (req, res) => {
     try {
         const subjects = await prisma.subject.findMany({
             orderBy: { name: 'asc' },
-            include: { lessonPlans: true }
+            include: { lessonPlans: true, Course: true }
         });
         res.json(subjects);
     } catch (error) {
@@ -24,9 +62,19 @@ app.get('/api/subjects', async (req, res) => {
 
 app.post('/api/subjects', async (req, res) => {
     try {
-        const { name, description, color } = req.body;
+        const { name, description, color, courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ error: 'Course is mandatory' });
+        }
+
         const subject = await prisma.subject.create({
-            data: { name, description, color: color || '#4f46e5' }
+            data: {
+                name,
+                description,
+                color: color || '#4f46e5',
+                courseId: Number(courseId)
+            }
         });
         res.json(subject);
     } catch (error) {
@@ -37,10 +85,20 @@ app.post('/api/subjects', async (req, res) => {
 app.put('/api/subjects/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, color } = req.body;
+        const { name, description, color, courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({ error: 'Course is mandatory' });
+        }
+
         const subject = await prisma.subject.update({
             where: { id: Number(id) },
-            data: { name, description, color }
+            data: {
+                name,
+                description,
+                color,
+                courseId: Number(courseId)
+            }
         });
         res.json(subject);
     } catch (error) {
@@ -106,7 +164,7 @@ app.delete('/api/sessions/:id', async (req, res) => {
 app.get('/api/templates', async (req, res) => {
     try {
         const templates = await prisma.checklistTemplate.findMany({
-            include: { items: { orderBy: { order: 'asc' } } }
+            include: { items: true }
         });
         res.json(templates);
     } catch (error) {
@@ -140,6 +198,29 @@ app.delete('/api/templates/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete template' });
+    }
+});
+
+app.put('/api/templates/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, items } = req.body;
+
+        const template = await prisma.checklistTemplate.update({
+            where: { id: Number(id) },
+            data: {
+                name,
+                description,
+                items: {
+                    deleteMany: {},
+                    create: items.map((text: string, index: number) => ({ text, order: index }))
+                }
+            },
+            include: { items: true }
+        });
+        res.json(template);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to update template' });
     }
 });
 
@@ -188,7 +269,7 @@ app.post('/api/lessons', async (req, res) => {
             });
             if (template) {
                 checklistData = {
-                    create: template.items.map(item => ({
+                    create: template.items.map((item: { text: string; order: number }) => ({
                         text: item.text,
                         order: item.order,
                         isCompleted: false
@@ -272,7 +353,7 @@ app.put('/api/lessons/checklist-items/:id/toggle', async (req, res) => {
         const allItems = await prisma.lessonChecklistItem.findMany({
             where: { lessonId: item.lessonId }
         });
-        const allDone = allItems.every((i: any) => i.isCompleted);
+        const allDone = allItems.every((i) => i.isCompleted);
 
         await prisma.lessonPlan.update({
             where: { id: item.lessonId },
@@ -317,6 +398,16 @@ app.post('/api/exams', async (req, res) => {
     }
 });
 
+app.delete('/api/exams/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await prisma.examResult.delete({ where: { id: Number(id) } });
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete exam result' });
+    }
+});
+
 // --- Stats ---
 app.get('/api/stats/progress', async (req, res) => {
     try {
@@ -341,7 +432,10 @@ app.get('/api/stats/summary', async (req, res) => {
         const totalSessions = await prisma.studySession.count();
         const allSessions = await prisma.studySession.findMany({ select: { startTime: true, endTime: true } });
         const totalHours = allSessions.reduce((acc: number, curr: { startTime: Date, endTime: Date }) => {
-            const duration = (new Date(curr.endTime).getTime() - new Date(curr.startTime).getTime()) / (1000 * 60 * 60);
+            const start = new Date(curr.startTime).getTime();
+            const end = new Date(curr.endTime).getTime();
+            if (isNaN(start) || isNaN(end) || end <= start) return acc;
+            const duration = (end - start) / (1000 * 60 * 60);
             return acc + duration;
         }, 0);
 

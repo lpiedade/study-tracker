@@ -21,18 +21,18 @@ export default function MonthView({ currentDate, lessons, subjects, onDayClick }
     const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-[600px] flex flex-col">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-200 dark:border-slate-800 overflow-hidden h-[600px] flex flex-col">
             {/* Weekday Headers */}
-            <div className="grid grid-cols-7 border-b border-gray-200 bg-gray-50">
+            <div className="grid grid-cols-7 border-b border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800">
                 {weekDays.map(day => (
-                    <div key={day} className="py-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                    <div key={day} className="py-2 text-center text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                         {day}
                     </div>
                 ))}
             </div>
 
             {/* Days Grid */}
-            <div className="grid grid-cols-7 flex-1 divide-x divide-gray-200">
+            <div className="grid grid-cols-7 flex-1 divide-x divide-gray-200 dark:divide-slate-800">
                 {/* We used flex-1 above to fill height, but grid layout needs explicit rows if we want uniform height. 
              Actually a simple grid with auto-rows is better. Let's adjust structure slightly. */}
                 {days.map((day) => {
@@ -51,13 +51,13 @@ export default function MonthView({ currentDate, lessons, subjects, onDayClick }
                             key={day.toISOString()}
                             onClick={() => onDayClick(day)}
                             className={clsx(
-                                "min-h-[80px] p-2 hover:bg-gray-50 cursor-pointer transition-colors relative border-b border-gray-100",
-                                !isCurrentMonth && "bg-gray-50/50"
+                                "min-h-[80px] p-2 hover:bg-gray-50 dark:hover:bg-slate-800/60 cursor-pointer transition-colors relative border-b border-gray-100",
+                                !isCurrentMonth && "bg-gray-50 dark:bg-slate-800/50"
                             )}
                         >
                             <span className={clsx(
                                 "text-sm font-medium block mb-2",
-                                !isCurrentMonth ? "text-gray-400" : "text-gray-700",
+                                !isCurrentMonth ? "text-gray-400 dark:text-slate-500" : "text-gray-700 dark:text-slate-300",
                                 isToday && "text-indigo-600 font-bold"
                             )}>
                                 {format(day, 'd')}
@@ -76,7 +76,7 @@ export default function MonthView({ currentDate, lessons, subjects, onDayClick }
                                     );
                                 })}
                                 {moreCount > 0 && (
-                                    <div className="text-[9px] text-gray-400 font-medium flex items-center justify-center">
+                                    <div className="text-[9px] text-gray-400 dark:text-slate-500 font-medium flex items-center justify-center">
                                         +{moreCount}
                                     </div>
                                 )}
